@@ -770,6 +770,19 @@ body.dark-mode .output::-webkit-scrollbar-thumb:hover {
   .output {
     max-height: 500px; /* Smaller on mobile */
   }
+  
+  /* Ensure output container is always clearly visible on mobile */
+  .output-container {
+    margin-top: 3rem;
+    border: 2px solid var(--primary);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Make the output title more visible on mobile */
+  .output-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
 }
 
 /* Ensure line heights match in the output container */
@@ -4329,19 +4342,24 @@ body.dark-mode .hamburger:hover .line {
 /* Hide the old hamburger button and show new one on mobile */
 @media (max-width: 768px) {
   .hamburger-btn {
-    display: none;
+    display: none !important;
   }
   
   .hamburger {
-    display: block;
+    display: block !important;
     position: absolute;
     right: 16px;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 9999; /* Ensure it's above everything */
   }
   
   /* Keep the theme toggle button properly positioned relative to the new hamburger */
   #toggle-theme {
     right: 65px; /* Position with proper spacing from hamburger */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999; /* Ensure it's above everything */
   }
 }

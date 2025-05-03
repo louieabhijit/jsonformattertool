@@ -9,6 +9,14 @@ function formatJSON() {
   
   try {
     const obj = JSON.parse(input);
+    
+    // Make sure the output container is visible
+    const outputContainer = document.querySelector('.output-container');
+    if (outputContainer) {
+      outputContainer.style.display = 'block';
+    }
+    
+    // Create the output
     output.textContent = JSON.stringify(obj, null, 2);
     output.className = "output success";
     animateOutput();
@@ -19,6 +27,14 @@ function formatJSON() {
     
     // Update the JSON Path finder with the parsed object
     buildJsonPathTree(obj);
+    
+    // Scroll to output container on mobile for better UX
+    if (window.innerWidth <= 768) {
+      const outputContainer = document.querySelector('.output-container');
+      if (outputContainer) {
+        outputContainer.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   } catch (e) {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
@@ -722,6 +738,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (input) {
           const obj = JSON.parse(input);
           const output = document.getElementById("json-output");
+          
+          // Make sure the output container is visible, especially on mobile
+          const outputContainer = document.querySelector('.output-container');
+          if (outputContainer) {
+            outputContainer.style.display = 'block';
+          }
+          
           output.textContent = JSON.stringify(obj, null, 2);
           output.className = "output success";
           animateOutput();
@@ -736,6 +759,47 @@ document.addEventListener('DOMContentLoaded', function() {
         // Silently fail if not valid JSON yet - validation will show the error
       }
     }, 300));
+    
+    // Add special handling for mobile devices
+    function addMobileFormatButton() {
+      // Remove any existing mobile format button
+      const existingButton = document.getElementById('mobile-format-button');
+      if (existingButton) {
+        existingButton.remove();
+      }
+      
+      // Only add the button on mobile
+      if (window.innerWidth <= 768) {
+        // Create a mobile format button for better UX on mobile
+        const mobileFormatBtn = document.createElement('button');
+        mobileFormatBtn.id = 'mobile-format-button';
+        mobileFormatBtn.className = 'btn-primary';
+        mobileFormatBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10H3M21 6H3M21 14H3M21 18H3"></path>
+          </svg>
+          Format JSON
+        `;
+        mobileFormatBtn.style.marginTop = '10px';
+        mobileFormatBtn.style.marginBottom = '15px';
+        mobileFormatBtn.style.width = '100%';
+        mobileFormatBtn.style.padding = '12px';
+        mobileFormatBtn.style.fontSize = '16px';
+        mobileFormatBtn.addEventListener('click', formatJSON);
+        
+        // Insert button after input container
+        const inputContainer = document.querySelector('.input-container');
+        if (inputContainer && inputContainer.parentNode) {
+          inputContainer.parentNode.insertBefore(mobileFormatBtn, inputContainer.nextSibling);
+        }
+      }
+    }
+    
+    // Add the button on page load
+    addMobileFormatButton();
+    
+    // Update the button when window is resized
+    window.addEventListener('resize', addMobileFormatButton);
     
     // Sync scrolling between textarea and line numbers
     jsonInput.addEventListener('scroll', function() {
