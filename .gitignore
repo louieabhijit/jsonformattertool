@@ -1,2 +1,12 @@
 # macOS system files
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+logs
+*.log
+
+# Editor directories
+.idea/
+.vscode/
