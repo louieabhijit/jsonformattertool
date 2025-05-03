@@ -1144,68 +1144,33 @@ document.addEventListener('DOMContentLoaded', function() {
   if (hamburgerMenu) {
     const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
     
-    // Different pages have different hamburger menu implementations
-    if (hamburgerCheckbox) {
-      // Index.html style with checkbox
-      hamburgerCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-          navActions.classList.add('mobile-open');
-        } else {
-          navActions.classList.remove('mobile-open');
-        }
-      });
-      
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+    // Handle hamburger menu toggle
+    hamburgerCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        navActions.classList.add('mobile-open');
+      } else {
+        navActions.classList.remove('mobile-open');
+      }
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+        navActions.classList.remove('mobile-open');
+        hamburgerCheckbox.checked = false;
+      }
+    });
+    
+    // Close mobile menu when a link is clicked
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (navActions.classList.contains('mobile-open')) {
           navActions.classList.remove('mobile-open');
           hamburgerCheckbox.checked = false;
         }
       });
-      
-      // Close mobile menu when a link is clicked
-      const navLinks = document.querySelectorAll('.nav-link');
-      navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-          if (navActions.classList.contains('mobile-open')) {
-            navActions.classList.remove('mobile-open');
-            hamburgerCheckbox.checked = false;
-          }
-        });
-      });
-    } else {
-      // About.html style with button
-      let menuOpen = false;
-      
-      hamburgerMenu.addEventListener('click', function() {
-        if (menuOpen) {
-          navActions.classList.remove('mobile-open');
-          menuOpen = false;
-        } else {
-          navActions.classList.add('mobile-open');
-          menuOpen = true;
-        }
-      });
-      
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        if (menuOpen && !hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
-          navActions.classList.remove('mobile-open');
-          menuOpen = false;
-        }
-      });
-      
-      // Close mobile menu when a link is clicked
-      const navLinks = document.querySelectorAll('.nav-link');
-      navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-          if (menuOpen && navActions.classList.contains('mobile-open')) {
-            navActions.classList.remove('mobile-open');
-            menuOpen = false;
-          }
-        });
-      });
-    }
+    });
   }
   
   // Set current year in the footer
