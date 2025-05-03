@@ -762,7 +762,11 @@ function handleFileUpload(file) {
         output.textContent = JSON.stringify(jsonObject, null, 2);
         output.className = "output success";
         animateOutput();
-        updateValidationStatus(true);
+        
+        // Check if updateValidationStatus exists before calling
+        if (typeof updateValidationStatus === 'function') {
+          updateValidationStatus(true);
+        }
         
         // Update output line numbers
         updateLineNumbers('output-line-numbers', output.textContent);
@@ -781,7 +785,10 @@ function handleFileUpload(file) {
       // Update input line numbers even for invalid JSON
       updateLineNumbers('input-line-numbers', e.target.result);
       
-      updateValidationStatus(false, error);
+      // Check if updateValidationStatus exists before calling
+      if (typeof updateValidationStatus === 'function') {
+        updateValidationStatus(false, error);
+      }
     }
   };
   
@@ -848,7 +855,11 @@ function addSampleJSON() {
   output.textContent = JSON.stringify(sampleJSON, null, 2);
   output.className = "output success";
   animateOutput();
-  updateValidationStatus(true);
+  
+  // Check if updateValidationStatus exists before calling
+  if (typeof updateValidationStatus === 'function') {
+    updateValidationStatus(true);
+  }
   
   // Update output line numbers
   updateLineNumbers('output-line-numbers', output.textContent);
