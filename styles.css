@@ -1124,6 +1124,18 @@ body.dark-mode .file-upload-btn:hover {
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem;
+    position: relative; /* Ensure proper positioning context */
+  }
+  
+  /* Make toggle-theme button visible on mobile */
+  #toggle-theme {
+    margin: 0.5rem auto;
+    display: block;
+    position: absolute;
+    right: 70px; /* Position to the left of hamburger */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
   }
   
   .left-column h1 {
@@ -1138,31 +1150,9 @@ body.dark-mode .file-upload-btn:hover {
     width: 100%;
   }
   
-  .nav-actions {
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    display: none;
-  }
-  
-  /* Show nav links in a hamburger menu for mobile */
+  /* Remove the old responsive nav styles that we're replacing */
   .nav-actions.responsive {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(5px);
-    width: 100%;
-    padding: 1rem 0;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-  
-  .nav-actions.responsive .nav-link {
-    display: block;
-    padding: 0.5rem 2rem;
+    display: none;
   }
 }
 
@@ -3320,6 +3310,8 @@ body.dark-mode .sitemap-description {
   padding: 0;
   color: var(--text);
   transition: var(--transition);
+  z-index: 1100; /* Increased z-index to ensure visibility */
+  position: relative; /* Ensure proper positioning */
 }
 
 body.dark-mode .hamburger-btn {
@@ -3340,13 +3332,19 @@ body.dark-mode .hamburger-btn {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute; /* Position absolutely */
+    right: 16px; /* Position on the right side */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Perfect vertical centering */
+    z-index: 1100; /* Ensure it's above other elements */
   }
   
   .nav-actions {
     gap: 0.75rem;
   }
   
-  .nav-actions .nav-link {
+  .nav-actions .nav-link,
+  .nav-actions .dropdown {
     display: none;
   }
   
@@ -3385,7 +3383,7 @@ body.dark-mode .hamburger-btn {
     background: rgba(67, 97, 238, 0.1);
   }
   
-  .nav-actions.mobile-open .nav-link.active {
+  body.dark-mode .nav-actions.mobile-open .nav-link.active {
     color: var(--primary);
     font-weight: 600;
   }
@@ -3437,6 +3435,18 @@ body.dark-mode .hamburger-btn {
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem;
+    position: relative; /* Ensure proper positioning context */
+  }
+  
+  /* Make toggle-theme button visible on mobile */
+  #toggle-theme {
+    margin: 0.5rem auto;
+    display: block;
+    position: absolute;
+    right: 70px; /* Position to the left of hamburger */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
   }
   
   .left-column h1 {
@@ -4245,4 +4255,18 @@ body.dark-mode .minimalist-footer-made-with {
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* Show dropdown and nav links when mobile menu is open */
+.nav-actions.mobile-open .nav-link,
+.nav-actions.mobile-open .dropdown {
+  display: block;
+  width: 100%;
+}
+
+/* Style dropdown button in mobile view */
+.nav-actions.mobile-open .dropdown-btn {
+  width: 100%;
+  padding: 0.75rem 2rem;
+  justify-content: center;
 }
