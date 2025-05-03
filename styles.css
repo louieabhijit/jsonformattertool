@@ -3623,7 +3623,453 @@ body.dark-mode .hamburger-btn {
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem;
-    position: relative;
+    position: relative; /* Ensure proper positioning context */
+  }
+  
+  /* Make toggle-theme button visible on mobile */
+  #toggle-theme {
+    margin: 0.5rem auto;
+    display: block;
+    position: absolute;
+    right: 70px; /* Position to the left of hamburger */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
+  }
+  
+  .left-column h1 {
+    font-size: 1.8rem;
+  }
+  
+  .controls {
+    flex-direction: column;
+  }
+  
+  .controls button {
+    width: 100%;
+  }
+  
+  /* Remove the old responsive nav styles that we're replacing */
+  .nav-actions.responsive {
+    display: none;
+  }
+}
+
+/* JSONPath Tree Styles */
+/* Existing code continues here */
+
+/* Developer Tools Section */
+.dev-tools-section {
+  padding: 5rem 0;
+  background: rgba(245, 248, 255, 0.8);
+}
+
+body.dark-mode .dev-tools-section {
+  background: rgba(25, 25, 35, 0.8);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.2rem;
+  color: #4361ee;
+  margin-bottom: 0.75rem;
+}
+
+.section-header p {
+  font-size: 1.1rem;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+body.dark-mode .section-header p {
+  color: #aaa;
+}
+
+.partner-tool-card {
+  display: flex;
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.partner-tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .partner-tool-card {
+  background: rgba(40, 40, 50, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .partner-tool-card:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.partner-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+  padding: 2rem;
+}
+
+.partner-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.partner-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+.partner-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+body.dark-mode .partner-content h3 {
+  color: #eee;
+}
+
+.partner-description {
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+body.dark-mode .partner-description {
+  color: #aaa;
+}
+
+.partner-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-tag {
+  background-color: rgba(58, 123, 213, 0.1);
+  color: #3a7bd5;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.feature-tag:hover {
+  background-color: rgba(58, 123, 213, 0.2);
+}
+
+body.dark-mode .feature-tag {
+  background-color: rgba(58, 123, 213, 0.15);
+}
+
+.partner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4361ee;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.partner-cta:hover {
+  background: #3a56d4;
+  transform: translateX(5px);
+}
+
+.partner-cta svg {
+  transition: transform 0.3s ease;
+}
+
+.partner-cta:hover svg {
+  transform: translateX(3px);
+}
+
+/* New Interactive Tool Card Styles */
+.tools-card-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  perspective: 1000px;
+}
+
+.interactive-tool-card {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+
+body.dark-mode .interactive-tool-card {
+  background: rgba(40, 40, 50, 0.7);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.interactive-tool-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+  box-shadow: 0 30px 60px rgba(67, 97, 238, 0.15);
+}
+
+body.dark-mode .interactive-tool-card:hover {
+  box-shadow: 0 30px 60px rgba(76, 201, 240, 0.15);
+}
+
+.card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(58, 123, 213, 0.05), rgba(0, 210, 255, 0.05));
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.interactive-tool-card:hover .card-background {
+  opacity: 1;
+}
+
+.card-content {
+  display: flex;
+  padding: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.tool-image {
+  flex: 0 0 300px;
+  margin-right: 2.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.tool-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.interactive-tool-card:hover .tool-image {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
+}
+
+.interactive-tool-card:hover .tool-image img {
+  transform: scale(1.05);
+}
+
+.tool-info {
+  flex: 1;
+}
+
+.tool-info h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+  position: relative;
+  display: inline-block;
+}
+
+body.dark-mode .tool-info h3 {
+  color: #e0e0e0;
+}
+
+.tool-info h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #4361ee, #4cc9f0);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.interactive-tool-card:hover .tool-info h3::after {
+  width: 100%;
+}
+
+.tool-info p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: #666;
+  font-size: 1.05rem;
+}
+
+body.dark-mode .tool-info p {
+  color: #b0b0c0;
+}
+
+.tool-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+  padding: 0.6rem 1rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(67, 97, 238, 0.05);
+}
+
+body.dark-mode .feature-pill {
+  background: rgba(76, 201, 240, 0.1);
+  color: #4cc9f0;
+  box-shadow: 0 2px 5px rgba(76, 201, 240, 0.05);
+}
+
+.feature-pill:hover {
+  background: rgba(67, 97, 238, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(67, 97, 238, 0.1);
+}
+
+body.dark-mode .feature-pill:hover {
+  background: rgba(76, 201, 240, 0.15);
+  box-shadow: 0 5px 10px rgba(76, 201, 240, 0.1);
+}
+
+.feature-pill svg {
+  transition: transform 0.3s ease;
+}
+
+.feature-pill:hover svg {
+  transform: scale(1.2);
+}
+
+.tool-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(90deg, #4361ee, #4cc9f0);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 0 0 20px 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.tool-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #3a0ca3, #4361ee);
+  transition: transform 0.5s ease;
+  transform: translateX(-100%);
+  z-index: -1;
+}
+
+.tool-link:hover::before {
+  transform: translateX(0);
+}
+
+.tool-link svg {
+  transition: transform 0.3s ease;
+}
+
+.tool-link:hover svg {
+  transform: translateX(5px);
+}
+
+@media (max-width: 900px) {
+  .card-content {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  
+  .tool-image {
+    flex: 0 0 auto;
+    margin-right: 0;
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .partner-tool-card {
+    flex-direction: column;
+  }
+  
+  .partner-logo {
+    min-width: 100%;
+    padding: 1.5rem;
+  }
+  
+  .partner-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .interactive-tool-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .tool-info h3 {
+    font-size: 1.6rem;
+  }
+  
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  .feature-pill {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile styles for navbar */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1rem;
   }
   
   .brand-container {
@@ -4621,37 +5067,5 @@ body.dark-mode .right-column {
   .actions-section {
     position: relative;
     top: 0;
-  }
-}
-
-/* Ensure hamburger icon is visible on mobile */
-@media (max-width: 768px) {
-  .hamburger { display:flex !important; align-items:center; justify-content:center; }
-}
-@media (max-width: 768px) {
-  label.hamburger {
-    display: block !important;
-  }
-  label.hamburger svg {
-    height: 1.8em !important;
-  }
-}
-
-/* Show and label hamburger on mobile */
-@media (max-width: 768px) {
-  .hamburger {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-  }
-  .hamburger svg {
-    height: 1.8em !important;
-  }
-  .hamburger::after {
-    content: 'Menu';
-    margin-left: 8px;
-    font-size: 1rem;
-    color: var(--text);
-    font-weight: 600;
   }
 }
