@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Formatter Tool - Format & Validate JSON</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link
+      rel="icon"
+      sizes="16x16 32x32 64x64 128x128 256x256"
+      href="./favicon-multi.ico"
+    />
+    <meta
+      name="description"
+      content="Use JSON Formatter Tool to format, validate, and explore JSON. Convert to CSV, XML, YAML. Online JSON editor with JSONPath explorer, syntax highlighting, and more."
+    />
+    <!-- Open Graph Tags -->
+    <meta
+      property="og:title"
+      content="JSON Formatter Tool - Format, Validate & Convert JSON"
+    />
+    <meta
+      property="og:description"
+      content="Free online tool to format, validate, and explore JSON data. Convert between formats, fix errors, and improve readability."
+    />
+    <meta property="og:url" content="https://jsonformattertool.com" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://jsonformattertool.com/og-image.png"
+    />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@jsonformattertool" />
+    <meta
+      name="twitter:title"
+      content="JSON Formatter Tool - Format, Validate & Convert JSON"
+    />
+    <meta
+      name="twitter:description"
+      content="Powerful online JSON tool with formatting, validation, conversions, and live JSONPath explorer."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jsonformattertool.com/og-image.png"
+    />
+    <link rel="canonical" href="https://jsonformattertool.com/" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "JSON Formatter Tool",
+        "url": "https://jsonformattertool.com",
+        "description": "Format, validate, and convert JSON data with our free online tool. Features include syntax highlighting, error detection, and export to multiple formats.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "124"
+        }
+      }
+    </script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" style="text-decoration: none; color: inherit">
+        <div class="brand-container">
+          <div class="logo-animation">
+            <div class="json-brackets">
+              <span class="bracket-left">{</span>
+              <span class="bracket-dots">
+                <span class="dot dot1"></span>
+                <span class="dot dot2"></span>
+                <span class="dot dot3"></span>
+              </span>
+              <span class="bracket-right">}</span>
+            </div>
+          </div>
+          <div class="logo">JSON Formatter Tool</div>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="index.html" class="nav-link active">Home</a>
+        <div class="dropdown">
+          <button class="dropdown-btn">
+            Tools
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="dropdown-arrow"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dropdown-content">
+            <a href="https://color-peek.com/" target="_blank">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="13.5" cy="6.5" r="2.5"></circle>
+                <circle cx="19" cy="17" r="2"></circle>
+                <circle cx="9" cy="17" r="2.5"></circle>
+                <path d="M14.6 13.5L16.59 15.24"></path>
+                <path d="M9.5 12.4L11.5 10.5"></path>
+                <path d="M11.5 15L14 13.5"></path>
+              </svg>
+              Color Peek
+              <span class="external-link-indicator">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  ></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <button id="toggle-theme" aria-label="Toggle dark mode">
+          <div class="theme-icon">
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </div>
+        </button>
+        <button
+          id="hamburger-menu"
+          class="hamburger-btn"
+          aria-label="Toggle navigation menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="left-column">
+        <h1>JSON Formatter & Validator</h1>
+        <p>Paste your JSON below to format and validate it in real-time.</p>
+
+        <div class="input-container">
+          <div class="line-numbers" id="input-line-numbers"></div>
+          <textarea
+            id="json-input"
+            placeholder="Paste your JSON here..."
+            spellcheck="false"
+            autocomplete="off"
+          ></textarea>
+          <div class="textarea-info">Real-time validation active</div>
+          <div class="validation-indicator" id="validation-indicator"></div>
+        </div>
+
+        <div class="upload-container" id="drop-area">
+          <div class="upload-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <p class="upload-text">Drag & drop your JSON file here</p>
+          <p class="upload-subtext">or</p>
+          <label for="file-upload" class="file-upload-btn">Choose a file</label>
+          <input
+            type="file"
+            id="file-upload"
+            accept=".json"
+            class="hidden-input"
+          />
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="actions-section">
+          <div class="controls">
+            <button onclick="formatJSON()" class="btn-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10H3M21 6H3M21 14H3M21 18H3"></path>
+              </svg>
+              Format JSON
+            </button>
+            <button onclick="minifyJSON()" class="btn-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"
+                ></path>
+              </svg>
+              Minify JSON
+            </button>
+            <button onclick="copyJSON()" class="btn-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                ></path>
+              </svg>
+              Copy Output
+            </button>
+            <button onclick="addSampleJSON()" class="btn-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                ></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Try a Sample
+            </button>
+          </div>
+        </div>
+
+        <div class="scrollable-content">
+          <div class="validation-container" id="validation-container">
+            <div class="validation-status">
+              <div class="status-icon" id="validation-icon"></div>
+              <div class="status-message" id="validation-message">
+                Enter JSON to validate
+              </div>
+            </div>
+            <div class="validation-details" id="validation-details"></div>
+          </div>
+
+          <div class="jsonpath-container">
+            <div class="jsonpath-header">
+              <h2>JSONPath Finder</h2>
+              <p>
+                Explore your JSON structure and generate JSONPath expressions
+              </p>
+            </div>
+
+            <div class="jsonpath-explorer" id="jsonpath-explorer">
+              <div class="jsonpath-tree" id="jsonpath-tree">
+                <div class="tree-loader">
+                  Please format your JSON first to explore paths
+                </div>
+              </div>
+
+              <div class="jsonpath-results">
+                <div class="result-header">
+                  <span>JSONPath Expression</span>
+                  <button
+                    id="copy-jsonpath"
+                    class="btn-icon"
+                    title="Copy JSONPath"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect
+                        x="9"
+                        y="9"
+                        width="13"
+                        height="13"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path
+                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="jsonpath-expression" id="jsonpath-expression">
+                  $
+                </div>
+
+                <div class="result-header">
+                  <span>Value Preview</span>
+                </div>
+                <pre id="jsonpath-value" class="jsonpath-value">
+Select a node in the tree to see its value</pre
+                >
+              </div>
+            </div>
+
+            <div class="jsonpath-tips">
+              <div class="tip">
+                <div class="tip-icon">💡</div>
+                <div class="tip-text">
+                  <strong>Tip:</strong> Click on any node in the tree to
+                  generate its JSONPath expression
+                </div>
+              </div>
+              <div class="tip">
+                <div class="tip-icon">🔍</div>
+                <div class="tip-text">
+                  <strong>Use cases:</strong> MongoDB queries, API development,
+                  data extraction
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="output-container">
+            <div class="output-header">
+              <span class="output-title">Output</span>
+              <div class="output-actions">
+                <button
+                  class="btn-icon"
+                  id="copy-output"
+                  title="Copy to Clipboard"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    ></path>
+                  </svg>
+                </button>
+                <button
+                  class="btn-icon"
+                  id="download-json"
+                  title="Download as JSON"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+                <button
+                  class="btn-icon"
+                  id="download-csv"
+                  title="Download as CSV"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+                    />
+                    <path d="M14 3v5h5M9 17v-8M12 17v-4M15 17v-4" />
+                  </svg>
+                </button>
+                <button
+                  class="btn-icon"
+                  id="download-xml"
+                  title="Download as XML"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="8 3 4 8 8 13" />
+                    <polyline points="16 3 20 8 16 13" />
+                    <line x1="12" y1="5" x2="12" y2="13" />
+                  </svg>
+                </button>
+                <button
+                  class="btn-icon"
+                  id="download-yaml"
+                  title="Download as YAML"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+                    />
+                    <path d="M14 3v5h5M8 12l2 2 4-4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="output-wrapper">
+              <div class="line-numbers" id="output-line-numbers"></div>
+              <pre id="json-output" class="output"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How to Use Section -->
+    <section class="how-to-use-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>How to Use JSON Formatter Tool</h2>
+          <p>
+            Streamline your JSON workflow with our powerful, easy-to-use tools
+          </p>
+        </div>
+
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10H3M21 6H3M21 14H3M21 18H3"></path>
+              </svg>
+            </div>
+            <h3>Format JSON</h3>
+            <p>
+              Instantly transform unreadable JSON into a beautifully formatted
+              structure with proper indentation and readability.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Paste your JSON</div>
+              <div class="step"><span>2</span>Click "Format JSON"</div>
+              <div class="step"><span>3</span>View the formatted result</div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"
+                ></path>
+              </svg>
+            </div>
+            <h3>Minify JSON</h3>
+            <p>
+              Reduce file size by removing all unnecessary whitespace, perfect
+              for optimizing data transfer and storage.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Enter your JSON</div>
+              <div class="step"><span>2</span>Click "Minify JSON"</div>
+              <div class="step"><span>3</span>Copy or download the result</div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                ></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <h3>Validate JSON</h3>
+            <p>
+              Instantly detect syntax errors with detailed error messages and
+              line highlighting for quick debugging.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Input your JSON</div>
+              <div class="step">
+                <span>2</span>Real-time validation activates
+              </div>
+              <div class="step"><span>3</span>Review errors if any appear</div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="8 3 4 8 8 13"></polyline>
+                <polyline points="16 3 20 8 16 13"></polyline>
+                <line x1="12" y1="5" x2="12" y2="13"></line>
+              </svg>
+            </div>
+            <h3>Convert Formats</h3>
+            <p>
+              Transform your JSON to CSV, XML, or YAML with just one click,
+              making it easy to use your data across different platforms.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Format your JSON</div>
+              <div class="step"><span>2</span>Click your desired format</div>
+              <div class="step"><span>3</span>Download the converted file</div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <h3>Import & Export</h3>
+            <p>
+              Upload JSON files via drag & drop or file selection, and export
+              your processed JSON in multiple formats.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Drag & drop a JSON file</div>
+              <div class="step"><span>2</span>Process as needed</div>
+              <div class="step">
+                <span>3</span>Download in your format of choice
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <h3>JSONPath Finder</h3>
+            <p>
+              Easily explore complex JSON structures and generate JSONPath
+              expressions to access specific data points.
+            </p>
+            <div class="feature-steps">
+              <div class="step"><span>1</span>Format your JSON</div>
+              <div class="step"><span>2</span>Explore the tree view</div>
+              <div class="step">
+                <span>3</span>Click nodes to generate paths
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="benefits-section">
+          <div class="benefit">
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-content">
+              <h4>Lightning Fast</h4>
+              <p>
+                Process even large JSON files instantly with our optimized
+                algorithms
+              </p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">🔒</div>
+            <div class="benefit-content">
+              <h4>100% Secure</h4>
+              <p>
+                All processing happens in your browser - your data never leaves
+                your computer
+              </p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">🌙</div>
+            <div class="benefit-content">
+              <h4>Dark Mode Support</h4>
+              <p>Easy on the eyes with our beautiful dark mode option</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Tools Section -->
+    <section id="developer-tools" style="padding: 5rem 0">
+      <style>
+        #developer-tools {
+          background: #f8f9ff;
+        }
+        body.dark-mode #developer-tools {
+          background: #1a1a2e;
+        }
+        .tool-card {
+          max-width: 800px;
+          margin: 0 auto;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+          border-radius: 12px;
+          overflow: hidden;
+          background: white;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          position: relative;
+          border: 1px solid rgba(240, 240, 250, 0.9);
+        }
+        body.dark-mode .tool-card {
+          background: #28293d;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(50, 50, 70, 0.5);
+        }
+        .tool-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 15px 30px rgba(67, 97, 238, 0.1);
+        }
+        .tool-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+        .tool-title {
+          font-size: 1.8rem;
+          color: #4361ee;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+        }
+        .tool-desc {
+          font-size: 1rem;
+          color: #555;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+        body.dark-mode .tool-title {
+          color: #6f8fff;
+        }
+        body.dark-mode .tool-desc {
+          color: #bbb;
+        }
+        .tool-content {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 2rem;
+        }
+        .tool-info {
+          flex: 1 1 100%;
+        }
+        .tool-name {
+          font-size: 1.6rem;
+          color: #333;
+          position: relative;
+          display: inline-block;
+          margin-bottom: 1.25rem;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+        body.dark-mode .tool-name {
+          color: #eee;
+        }
+        .tool-name::after {
+          content: "";
+          position: absolute;
+          bottom: -6px;
+          left: 0;
+          width: 40px;
+          height: 2px;
+          background: linear-gradient(90deg, #4361ee, #4cc9f0);
+          border-radius: 2px;
+          transition: width 0.3s ease;
+        }
+        .tool-card:hover .tool-name::after {
+          width: 100%;
+        }
+        .tool-description {
+          margin-bottom: 1.5rem;
+          line-height: 1.6;
+          color: #555;
+          font-size: 0.95rem;
+        }
+        body.dark-mode .tool-description {
+          color: #aaa;
+        }
+        .tool-features {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .tool-feature {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          background: rgba(67, 97, 238, 0.08);
+          color: #4361ee;
+          padding: 0.4rem 0.8rem;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+        body.dark-mode .tool-feature {
+          background: rgba(76, 201, 240, 0.08);
+          color: #4cc9f0;
+        }
+        .tool-feature:hover {
+          background: rgba(67, 97, 238, 0.12);
+          transform: translateY(-2px);
+        }
+        body.dark-mode .tool-feature:hover {
+          background: rgba(76, 201, 240, 0.12);
+        }
+        .tool-feature svg {
+          transition: transform 0.3s ease;
+        }
+        .tool-feature:hover svg {
+          transform: scale(1.15);
+        }
+        .tool-link {
+          display: block;
+          text-align: center;
+          padding: 1rem;
+          background: #f7f9ff;
+          color: #4361ee;
+          text-decoration: none;
+          font-weight: 500;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+          border-top: 1px solid rgba(67, 97, 238, 0.1);
+        }
+        body.dark-mode .tool-link {
+          background: rgba(40, 40, 50, 0.8);
+          color: #6f8fff;
+          border-top: 1px solid rgba(111, 143, 255, 0.1);
+        }
+        .tool-link:hover {
+          background: rgba(67, 97, 238, 0.05);
+        }
+        body.dark-mode .tool-link:hover {
+          background: rgba(111, 143, 255, 0.05);
+        }
+        .tool-link-content {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .tool-link svg {
+          transition: transform 0.3s ease;
+        }
+        .tool-link:hover svg {
+          transform: translateX(4px);
+        }
+        @media (max-width: 768px) {
+          .tool-content {
+            padding: 1.5rem;
+          }
+        }
+      </style>
+
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 1.5rem">
+        <div class="tool-header">
+          <h2 class="tool-title">Essential Developer Tools</h2>
+          <p class="tool-desc">
+            Discover powerful tools that complement your development workflow
+          </p>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-content">
+            <div class="tool-info">
+              <h3 class="tool-name">Color Peek</h3>
+
+              <p class="tool-description">
+                Extract colors from images, generate beautiful palettes, and get
+                color codes in multiple formats. The perfect companion for UI/UX
+                designers and frontend developers working with JSON data.
+              </p>
+
+              <div class="tool-features">
+                <span class="tool-feature">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                    ></path>
+                  </svg>
+                  Color Extraction
+                </span>
+
+                <span class="tool-feature">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect
+                      x="3"
+                      y="3"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  Palette Generation
+                </span>
+
+                <span class="tool-feature">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M2 12h6a2 2 0 0 1 2 2v8H4a2 2 0 0 1-2-2v-8Z"
+                    ></path>
+                    <path d="M6 12V2h6a2 2 0 0 1 2 2v8"></path>
+                    <path d="M18 12h4"></path>
+                    <path d="M18 6h4"></path>
+                    <path d="M18 18h4"></path>
+                  </svg>
+                  Accessibility Testing
+                </span>
+
+                <span class="tool-feature">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                  Code Snippets
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <a
+            href="https://color-peek.com/"
+            class="tool-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="tool-link-content">
+              Visit Color Peek
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                ></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Footer -->
+    <footer class="minimalist-footer">
+      <div class="minimalist-footer-container">
+        <div class="minimalist-footer-content">
+          <div class="minimalist-footer-left">
+            <div class="minimalist-footer-logo">
+              <span class="minimalist-footer-logo-icon">{}</span>
+              <span class="minimalist-footer-logo-text"
+                >JSON Formatter Tool</span
+              >
+            </div>
+            <p class="minimalist-footer-tagline">
+              A powerful yet simple tool for formatting, validating, and
+              transforming JSON data with ease.
+            </p>
+            <div class="minimalist-social-icons">
+              <a href="#" class="minimalist-social-icon" aria-label="Github">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="Twitter">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="LinkedIn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  ></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="minimalist-footer-right">
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Navigation</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+              </ul>
+            </div>
+
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Legal</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="minimalist-footer-bottom">
+          <div class="minimalist-footer-copyright">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            JSON Formatter Tool. All rights reserved.
+          </div>
+          <div class="minimalist-footer-made-with">
+            Made with <span class="minimalist-heart">♥</span> for developers
+            worldwide
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

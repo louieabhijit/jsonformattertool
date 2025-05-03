@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog - JSON Formatter Tool</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link
+      rel="icon"
+      sizes="16x16 32x32 64x64 128x128 256x256"
+      href="./favicon-multi.ico"
+    />
+    <meta
+      name="description"
+      content="Explore our blog for JSON tips, tutorials, and best practices to improve your development workflow."
+    />
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Blog - JSON Formatter Tool" />
+    <meta
+      property="og:description"
+      content="Read the latest articles about JSON formatting, validation, and working with complex data structures."
+    />
+    <meta property="og:url" content="https://jsonformattertool.com/blog" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://jsonformattertool.com/og-image.png"
+    />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Blog - JSON Formatter Tool" />
+    <meta
+      name="twitter:description"
+      content="Read the latest articles about JSON formatting, validation, and working with complex data structures."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jsonformattertool.com/og-image.png"
+    />
+    <link rel="canonical" href="https://jsonformattertool.com/blog" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Blog specific styles */
+      .blog-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .blog-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .blog-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, var(--primary), #00b4d8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        display: inline-block;
+      }
+
+      .blog-description {
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+      }
+
+      body.dark-mode .blog-description {
+        color: #aaa;
+      }
+
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+      }
+
+      .blog-card {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      body.dark-mode .blog-card {
+        background: rgba(30, 30, 40, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .blog-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.1);
+      }
+
+      .blog-image {
+        height: 200px;
+        overflow: hidden;
+      }
+
+      .blog-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .blog-card:hover .blog-image img {
+        transform: scale(1.05);
+      }
+
+      .blog-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .blog-date {
+        font-size: 0.85rem;
+        color: #777;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      body.dark-mode .blog-date {
+        color: #aaa;
+      }
+
+      .blog-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        color: #333;
+        line-height: 1.3;
+      }
+
+      body.dark-mode .blog-card h3 {
+        color: #e0e0e0;
+      }
+
+      .blog-excerpt {
+        margin-bottom: 1.5rem;
+        color: #555;
+        line-height: 1.6;
+        flex-grow: 1;
+      }
+
+      body.dark-mode .blog-excerpt {
+        color: #bbb;
+      }
+
+      .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .blog-tag {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      body.dark-mode .blog-tag {
+        background: rgba(67, 97, 238, 0.2);
+      }
+
+      .read-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin-top: auto;
+      }
+
+      .read-more:hover {
+        gap: 0.75rem;
+      }
+
+      .read-more svg {
+        transition: transform 0.2s ease;
+      }
+
+      .read-more:hover svg {
+        transform: translateX(3px);
+      }
+
+      @media (max-width: 768px) {
+        .blog-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .blog-title {
+          font-size: 2rem;
+        }
+      }
+    </style>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html" style="text-decoration: none; color: inherit">
+        <div class="brand-container">
+          <div class="logo-animation">
+            <div class="json-brackets">
+              <span class="bracket-left">{</span>
+              <span class="bracket-dots">
+                <span class="dot dot1"></span>
+                <span class="dot dot2"></span>
+                <span class="dot dot3"></span>
+              </span>
+              <span class="bracket-right">}</span>
+            </div>
+          </div>
+          <div class="logo">JSON Formatter Tool</div>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="index.html" class="nav-link">Home</a>
+        <div class="dropdown">
+          <button class="dropdown-btn">
+            Tools
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="dropdown-arrow"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dropdown-content">
+            <a href="https://color-peek.com/" target="_blank">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="13.5" cy="6.5" r="2.5"></circle>
+                <circle cx="19" cy="17" r="2"></circle>
+                <circle cx="9" cy="17" r="2.5"></circle>
+                <path d="M14.6 13.5L16.59 15.24"></path>
+                <path d="M9.5 12.4L11.5 10.5"></path>
+                <path d="M11.5 15L14 13.5"></path>
+              </svg>
+              Color Peek
+              <span class="external-link-indicator">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  ></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="blog.html" class="nav-link active">Blog</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <button id="toggle-theme" aria-label="Toggle dark mode">
+          <div class="theme-icon">
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </div>
+        </button>
+        <button
+          id="hamburger-menu"
+          class="hamburger-btn"
+          aria-label="Toggle navigation menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="blog-container">
+      <div class="blog-header">
+        <h1 class="blog-title">JSON Formatter Blog</h1>
+        <p class="blog-description">
+          Explore our articles for tips, tutorials, and best practices for
+          working with JSON
+        </p>
+      </div>
+
+      <div class="blog-grid">
+        <!-- Blog Post 1 -->
+        <article class="blog-card">
+          <div class="blog-image">
+            <img
+              src="blog/images/json-schema-validation.jpg"
+              alt="JSON Structure and Schema Validation"
+            />
+          </div>
+          <div class="blog-content">
+            <div class="blog-date">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              May 15, 2023
+            </div>
+            <h3>Understanding JSON Structure and Schema Validation</h3>
+            <div class="blog-excerpt">
+              <p>
+                Learn how to structure your JSON data properly and use schema
+                validation to ensure data quality and consistency across your
+                applications. This article covers JSON Schema, validation tools,
+                and best practices.
+              </p>
+            </div>
+            <div class="blog-tags">
+              <span class="blog-tag">JSON Schema</span>
+              <span class="blog-tag">Validation</span>
+              <span class="blog-tag">Best Practices</span>
+            </div>
+            <a href="blog/json-schema-validation.html" class="read-more">
+              Read More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Post 2 -->
+        <article class="blog-card">
+          <div class="blog-image">
+            <img
+              src="blog/images/jsonpath-techniques.jpg"
+              alt="JSONPath Advanced Techniques"
+            />
+          </div>
+          <div class="blog-content">
+            <div class="blog-date">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              June 22, 2023
+            </div>
+            <h3>Advanced JSONPath Techniques for Complex Data Extraction</h3>
+            <div class="blog-excerpt">
+              <p>
+                Master the art of JSONPath expressions to efficiently navigate
+                and extract data from complex JSON structures. This guide covers
+                advanced selectors, filters, and practical examples for
+                real-world applications.
+              </p>
+            </div>
+            <div class="blog-tags">
+              <span class="blog-tag">JSONPath</span>
+              <span class="blog-tag">Data Extraction</span>
+              <span class="blog-tag">Advanced</span>
+            </div>
+            <a href="blog/jsonpath-techniques.html" class="read-more">
+              Read More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Post 3 -->
+        <article class="blog-card">
+          <div class="blog-image">
+            <img
+              src="blog/images/json-performance.jpg"
+              alt="JSON Performance Optimization"
+            />
+          </div>
+          <div class="blog-content">
+            <div class="blog-date">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              July 8, 2023
+            </div>
+            <h3>Optimizing JSON Performance in Web Applications</h3>
+            <div class="blog-excerpt">
+              <p>
+                Discover techniques to improve JSON parsing, processing, and
+                transmission performance in your web applications. Learn about
+                minification, streaming, and performance measurement tools to
+                create faster, more efficient apps.
+              </p>
+            </div>
+            <div class="blog-tags">
+              <span class="blog-tag">Performance</span>
+              <span class="blog-tag">Optimization</span>
+              <span class="blog-tag">Web Development</span>
+            </div>
+            <a href="blog/json-performance.html" class="read-more">
+              Read More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Post 4 - Validate JSON Without Code -->
+        <article class="blog-card">
+          <div class="blog-image">
+            <img
+              src="blog/images/validate-json-without-code.jpg"
+              alt="Validate JSON Without Code"
+            />
+          </div>
+          <div class="blog-content">
+            <div class="blog-date">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              August 20, 2023
+            </div>
+            <h3>How to Validate JSON Without Writing Code</h3>
+            <div class="blog-excerpt">
+              <p>
+                Learn how to validate JSON online without writing a single line
+                of code. This beginner-friendly guide shows you how to use free
+                tools to catch syntax errors instantly, ensure data correctness,
+                and format your JSON data with just a few clicks.
+              </p>
+            </div>
+            <div class="blog-tags">
+              <span class="blog-tag">JSON Validation</span>
+              <span class="blog-tag">No Code</span>
+              <span class="blog-tag">Data Formats</span>
+            </div>
+            <a href="blog/validate-json-without-code.html" class="read-more">
+              Read More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Blog Post 5 - JSON Errors -->
+        <article class="blog-card">
+          <div class="blog-image">
+            <img
+              src="blog/images/json-errors.jpg"
+              alt="JSON Errors and How to Fix Them"
+            />
+          </div>
+          <div class="blog-content">
+            <div class="blog-date">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              October 15, 2023
+            </div>
+            <h3>
+              Understanding JSON Errors: Common Mistakes and How to Fix Them
+            </h3>
+            <div class="blog-excerpt">
+              <p>
+                Learn the most common JSON syntax errors, why they happen, and
+                how to fix them instantly using an online validator. This
+                debugging guide covers missing commas, unquoted keys, mismatched
+                brackets, and other common JSON pitfalls.
+              </p>
+            </div>
+            <div class="blog-tags">
+              <span class="blog-tag">JSON Errors</span>
+              <span class="blog-tag">Debugging</span>
+              <span class="blog-tag">Validation</span>
+            </div>
+            <a href="blog/json-errors.html" class="read-more">
+              Read More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="minimalist-footer">
+      <div class="minimalist-footer-container">
+        <div class="minimalist-footer-content">
+          <div class="minimalist-footer-left">
+            <div class="minimalist-footer-logo">
+              <span class="minimalist-footer-logo-icon">{}</span>
+              <span class="minimalist-footer-logo-text"
+                >JSON Formatter Tool</span
+              >
+            </div>
+            <p class="minimalist-footer-tagline">
+              A powerful yet simple tool for formatting, validating, and
+              transforming JSON data with ease.
+            </p>
+            <div class="minimalist-social-icons">
+              <a href="#" class="minimalist-social-icon" aria-label="Github">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="Twitter">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="LinkedIn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  ></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="minimalist-footer-right">
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Navigation</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+              </ul>
+            </div>
+
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Legal</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="sitemap.html">Sitemap</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="minimalist-footer-bottom">
+          <div class="minimalist-footer-copyright">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            JSON Formatter Tool. All rights reserved.
+          </div>
+          <div class="minimalist-footer-made-with">
+            Made with <span class="minimalist-heart">♥</span> for developers
+            worldwide
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

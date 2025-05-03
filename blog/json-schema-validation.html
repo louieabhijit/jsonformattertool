@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Understanding JSON Structure and Schema Validation - JSON Formatter Tool
+    </title>
+    <meta
+      name="description"
+      content="Learn how to structure your JSON data properly and use schema validation to ensure data quality and consistency across your applications."
+    />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <link
+      rel="icon"
+      sizes="16x16 32x32 64x64 128x128 256x256"
+      href="../favicon-multi.ico"
+    />
+
+    <!-- Open Graph Tags -->
+    <meta
+      property="og:title"
+      content="Understanding JSON Structure and Schema Validation - JSON Formatter Tool"
+    />
+    <meta
+      property="og:description"
+      content="Learn how to structure your JSON data properly and use schema validation to ensure data quality and consistency across your applications."
+    />
+    <meta
+      property="og:url"
+      content="https://jsonformattertool.com/blog/json-schema-validation.html"
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:image"
+      content="https://jsonformattertool.com/blog/images/json-schema-validation.jpg"
+    />
+    <meta
+      property="article:published_time"
+      content="2025-04-15T10:00:00+00:00"
+    />
+    <meta property="article:author" content="JSON Formatter Team" />
+    <meta property="article:section" content="JSON Development" />
+    <meta property="article:tag" content="JSON Schema" />
+    <meta property="article:tag" content="Validation" />
+    <meta property="article:tag" content="Best Practices" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Blog article specific styles */
+      .blog-article-container {
+        max-width: 800px;
+        margin: 2rem auto 4rem;
+        padding: 0 1.5rem;
+      }
+
+      .blog-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .blog-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+      }
+
+      .blog-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      body.dark-mode .blog-meta {
+        color: #aaa;
+      }
+
+      .blog-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .blog-featured-image {
+        width: 100%;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+      }
+
+      .blog-featured-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .blog-content {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #333;
+      }
+
+      body.dark-mode .blog-content {
+        color: #e0e0e0;
+      }
+
+      .blog-content p,
+      .blog-content ul,
+      .blog-content ol {
+        margin-bottom: 1.5rem;
+      }
+
+      .blog-content h2 {
+        font-size: 1.75rem;
+        margin: 2.5rem 0 1rem;
+        color: #222;
+      }
+
+      body.dark-mode .blog-content h2 {
+        color: #f1f1f1;
+      }
+
+      .blog-content h3 {
+        font-size: 1.35rem;
+        margin: 2rem 0 1rem;
+        color: #333;
+      }
+
+      body.dark-mode .blog-content h3 {
+        color: #e6e6e6;
+      }
+
+      .blog-content a {
+        color: var(--primary);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s ease;
+      }
+
+      .blog-content a:hover {
+        border-color: var(--primary);
+      }
+
+      .blog-content code {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+      }
+
+      body.dark-mode .blog-content code {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .blog-content pre {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 1.25rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin-bottom: 1.5rem;
+      }
+
+      body.dark-mode .blog-content pre {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .blog-content pre code {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        display: block;
+      }
+
+      .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin: 3rem 0;
+      }
+
+      .blog-tag {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      body.dark-mode .blog-tag {
+        background: rgba(67, 97, 238, 0.2);
+      }
+
+      .blog-tag:hover {
+        transform: translateY(-2px);
+        background: rgba(67, 97, 238, 0.15);
+      }
+
+      .blog-navigation {
+        margin-top: 4rem;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: 2rem;
+      }
+
+      body.dark-mode .blog-navigation {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .blog-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .blog-nav-link svg {
+        transition: transform 0.2s ease;
+      }
+
+      .blog-nav-link.prev:hover svg {
+        transform: translateX(-3px);
+      }
+
+      .blog-nav-link.next:hover svg {
+        transform: translateX(3px);
+      }
+
+      @media (max-width: 768px) {
+        .blog-title {
+          font-size: 2rem;
+        }
+
+        .blog-meta {
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+      }
+    </style>
+    <script src="../script.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="../index.html" style="text-decoration: none; color: inherit">
+        <div class="brand-container">
+          <div class="logo-animation">
+            <div class="json-brackets">
+              <span class="bracket-left">{</span>
+              <span class="bracket-dots">
+                <span class="dot dot1"></span>
+                <span class="dot dot2"></span>
+                <span class="dot dot3"></span>
+              </span>
+              <span class="bracket-right">}</span>
+            </div>
+          </div>
+          <div class="logo">JSON Formatter Tool</div>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="../index.html" class="nav-link">Home</a>
+        <div class="dropdown">
+          <button class="dropdown-btn">
+            Tools
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="dropdown-arrow"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dropdown-content">
+            <a href="https://color-peek.com/" target="_blank">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="13.5" cy="6.5" r="2.5"></circle>
+                <circle cx="19" cy="17" r="2"></circle>
+                <circle cx="9" cy="17" r="2.5"></circle>
+                <path d="M14.6 13.5L16.59 15.24"></path>
+                <path d="M9.5 12.4L11.5 10.5"></path>
+                <path d="M11.5 15L14 13.5"></path>
+              </svg>
+              Color Peek
+              <span class="external-link-indicator">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  ></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+        <a href="../about.html" class="nav-link">About</a>
+        <a href="../blog.html" class="nav-link active">Blog</a>
+        <a href="../faq.html" class="nav-link">FAQ</a>
+        <a href="../contact.html" class="nav-link">Contact</a>
+        <button id="toggle-theme" aria-label="Toggle dark mode">
+          <div class="theme-icon">
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </div>
+        </button>
+        <button
+          id="hamburger-menu"
+          class="hamburger-btn"
+          aria-label="Toggle navigation menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="blog-article-container">
+      <article>
+        <header class="blog-header">
+          <h1 class="blog-title">
+            Understanding JSON Structure and Schema Validation
+          </h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              April 15, 2025
+            </div>
+            <div class="blog-meta-item">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              JSON Formatter Team
+            </div>
+          </div>
+        </header>
+
+        <div class="blog-featured-image">
+          <img
+            src="images/json-schema-validation.jpg"
+            alt="Code editor showing JSON Schema validation"
+          />
+        </div>
+
+        <div class="blog-content">
+          <p>
+            In the world of data interchange, JSON (JavaScript Object Notation)
+            has become the de facto standard for transmitting and storing
+            structured information. However, as JSON data structures grow more
+            complex, ensuring their correctness and consistency becomes
+            challenging. This is where <strong>JSON Schema</strong> and
+            <strong>validation</strong> come into play – providing a robust
+            framework to define, document, and validate your JSON data.
+          </p>
+
+          <h2>What is JSON Schema?</h2>
+          <p>
+            JSON Schema is a vocabulary that allows you to annotate and validate
+            JSON documents. It provides a contract for what JSON data is
+            required for a given application and how to interact with it. Think
+            of it as a blueprint that defines:
+          </p>
+
+          <ul>
+            <li>What fields are required or optional</li>
+            <li>What data types each field should contain</li>
+            <li>
+              Constraints on values (minimum, maximum, pattern matching, etc.)
+            </li>
+            <li>Nested object structures and relationships</li>
+          </ul>
+
+          <p>
+            By defining a schema, you create a clear specification that both
+            humans and machines can understand, which serves as documentation
+            and enables automated validation.
+          </p>
+
+          <h2>Benefits of Using JSON Schema</h2>
+          <h3>Data Validation</h3>
+          <p>
+            The primary benefit of JSON Schema is validation. It ensures that
+            data conforms to expected structures before processing, which helps
+            to:
+          </p>
+
+          <ul>
+            <li>Catch errors early in the development process</li>
+            <li>Prevent invalid data from entering your system</li>
+            <li>Reduce the need for defensive programming</li>
+            <li>Improve overall data quality and reliability</li>
+          </ul>
+
+          <h3>Documentation</h3>
+          <p>
+            A well-written JSON Schema effectively serves as documentation for
+            your data format. It helps developers understand:
+          </p>
+
+          <ul>
+            <li>The structure and organization of your data</li>
+            <li>Expected data types and formats</li>
+            <li>Required vs. optional fields</li>
+            <li>Constraints and business rules</li>
+          </ul>
+
+          <h3>Code Generation</h3>
+          <p>
+            Modern development workflows can leverage JSON Schema to
+            automatically generate:
+          </p>
+
+          <ul>
+            <li>Type definitions for TypeScript, Java, and other languages</li>
+            <li>API documentation</li>
+            <li>Form validation in web applications</li>
+            <li>Mock data for testing</li>
+          </ul>
+
+          <h2>Basic Structure of a JSON Schema</h2>
+          <p>
+            A JSON Schema is itself a JSON document. Here's a simple example
+            that defines a schema for a person object:
+          </p>
+
+          <pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person",
+  "description": "A person object with identification and contact information",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "description": "The person's first name"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The person's last name"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Age in years"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address"
+    }
+  },
+  "required": ["firstName", "lastName", "email"]
+}</code></pre>
+
+          <p>
+            This schema defines a person object with four properties: firstName,
+            lastName, age, and email. Three of these properties are required,
+            and each has a specific data type and description.
+          </p>
+
+          <h2>Key Schema Keywords</h2>
+
+          <h3>Basic Keywords</h3>
+          <ul>
+            <li>
+              <code>type</code>: Specifies the data type (string, number,
+              object, array, boolean, null)
+            </li>
+            <li>
+              <code>properties</code>: Defines the properties of an object
+            </li>
+            <li><code>required</code>: Lists required properties</li>
+            <li>
+              <code>additionalProperties</code>: Controls whether properties not
+              specified in the schema are allowed
+            </li>
+          </ul>
+
+          <h3>String Constraints</h3>
+          <ul>
+            <li>
+              <code>minLength</code>/<code>maxLength</code>: Minimum/maximum
+              string length
+            </li>
+            <li><code>pattern</code>: RegEx pattern for string validation</li>
+            <li>
+              <code>format</code>: Predefined formats like email, date-time,
+              etc.
+            </li>
+          </ul>
+
+          <h3>Numeric Constraints</h3>
+          <ul>
+            <li>
+              <code>minimum</code>/<code>maximum</code>: Minimum/maximum value
+            </li>
+            <li>
+              <code>exclusiveMinimum</code>/<code>exclusiveMaximum</code>:
+              Exclusive bounds
+            </li>
+            <li>
+              <code>multipleOf</code>: Number must be a multiple of the
+              specified value
+            </li>
+          </ul>
+
+          <h3>Array Keywords</h3>
+          <ul>
+            <li><code>items</code>: Schema for array items</li>
+            <li>
+              <code>minItems</code>/<code>maxItems</code>: Minimum/maximum array
+              length
+            </li>
+            <li>
+              <code>uniqueItems</code>: Whether array items must be unique
+            </li>
+          </ul>
+
+          <h2>Implementing JSON Schema Validation</h2>
+
+          <h3>Server-side Validation</h3>
+          <p>
+            For backend applications, numerous libraries exist across various
+            languages:
+          </p>
+
+          <ul>
+            <li><strong>JavaScript/Node.js</strong>: Ajv, jsonschema, tv4</li>
+            <li><strong>Python</strong>: jsonschema, fastjsonschema</li>
+            <li>
+              <strong>Java</strong>: json-schema-validator, Everit JSON Schema
+            </li>
+            <li><strong>Ruby</strong>: json_schema</li>
+            <li><strong>PHP</strong>: opis/json-schema</li>
+            <li><strong>Go</strong>: gojsonschema</li>
+          </ul>
+
+          <p>Here's a simple example using Ajv in Node.js:</p>
+
+          <pre><code>const Ajv = require('ajv')
+const ajv = new Ajv()
+
+const schema = {
+  type: 'object',
+  properties: {
+    username: {type: 'string', minLength: 3},
+    email: {type: 'string', format: 'email'},
+    age: {type: 'integer', minimum: 18}
+  },
+  required: ['username', 'email'],
+  additionalProperties: false
+}
+
+const validate = ajv.compile(schema)
+
+// Valid data
+const validData = {
+  username: 'johndoe',
+  email: 'john@example.com',
+  age: 25
+}
+
+const isValid = validate(validData)
+console.log(isValid) // true
+
+// Invalid data
+const invalidData = {
+  username: 'jo', // too short
+  email: 'not-an-email',
+  age: 16 // too young
+}
+
+const isValidBad = validate(invalidData)
+console.log(isValidBad) // false
+console.log(validate.errors) // validation error details</code></pre>
+
+          <h3>Client-side Validation</h3>
+          <p>For frontend applications, you can use libraries like:</p>
+
+          <ul>
+            <li>
+              <strong>Ajv</strong>: Highly performant JSON Schema validator
+            </li>
+            <li>
+              <strong>react-jsonschema-form</strong>: Builds forms from JSON
+              Schema
+            </li>
+            <li>
+              <strong>JSON Editor</strong>: UI for editing JSON with validation
+            </li>
+          </ul>
+
+          <h2>Best Practices for JSON Schema</h2>
+
+          <h3>Schema Organization</h3>
+          <ul>
+            <li>
+              <strong>Use $ref for reusability</strong>: Define common patterns
+              once and reference them
+            </li>
+            <li>
+              <strong>Split large schemas</strong>: Break down complex schemas
+              into manageable parts
+            </li>
+            <li>
+              <strong>Version your schemas</strong>: Include version information
+              for compatibility
+            </li>
+          </ul>
+
+          <h3>Validation Strategy</h3>
+          <ul>
+            <li>
+              <strong>Be specific</strong>: Define constraints as precisely as
+              possible
+            </li>
+            <li>
+              <strong>Provide meaningful error messages</strong>: Use custom
+              error messages where possible
+            </li>
+            <li>
+              <strong>Layer validations</strong>: Separate structural validation
+              from business rule validation
+            </li>
+          </ul>
+
+          <h3>Documentation</h3>
+          <ul>
+            <li>
+              <strong>Use descriptive titles and descriptions</strong>: Help
+              others understand your schema
+            </li>
+            <li>
+              <strong>Include examples</strong>: Provide sample valid documents
+            </li>
+            <li>
+              <strong>Document the validation process</strong>: Explain how and
+              when validation occurs
+            </li>
+          </ul>
+
+          <h2>Advanced JSON Schema Features</h2>
+
+          <h3>Conditional Schemas</h3>
+          <p>
+            JSON Schema allows for conditional validation with keywords like
+            <code>if</code>, <code>then</code>, and <code>else</code>:
+          </p>
+
+          <pre><code>{
+  "type": "object",
+  "properties": {
+    "type": { "enum": ["personal", "business"] },
+    "personalID": { "type": "string" },
+    "businessID": { "type": "string" }
+  },
+  "required": ["type"],
+  "if": {
+    "properties": { "type": { "enum": ["personal"] } }
+  },
+  "then": {
+    "required": ["personalID"]
+  },
+  "else": {
+    "required": ["businessID"]
+  }
+}</code></pre>
+
+          <h3>Custom Formats</h3>
+          <p>
+            Many validators allow defining custom formats for specialized
+            validation needs:
+          </p>
+
+          <pre><code>// Using Ajv in Node.js
+ajv.addFormat('binary', {
+  validate: (str) => /^[01]+$/.test(str)
+});</code></pre>
+
+          <h2>Conclusion</h2>
+          <p>
+            JSON Schema validation is an essential tool for ensuring data
+            quality and consistency in modern applications. By adopting schema
+            validation, you can:
+          </p>
+
+          <ul>
+            <li>Improve data reliability and application stability</li>
+            <li>Provide clear documentation for APIs and data structures</li>
+            <li>
+              Reduce development time through automated validation and code
+              generation
+            </li>
+            <li>Create a single source of truth for your data requirements</li>
+          </ul>
+
+          <p>
+            As JSON continues to be the dominant format for data interchange,
+            investing in robust validation practices will pay dividends in code
+            quality, developer productivity, and system reliability.
+          </p>
+
+          <p>
+            Ready to implement JSON Schema validation in your projects? Start by
+            defining schemas for your most critical data structures, integrating
+            validation into your API endpoints, and gradually expanding your
+            validation coverage for comprehensive data quality control.
+          </p>
+        </div>
+
+        <div class="blog-tags">
+          <span class="blog-tag">JSON Schema</span>
+          <span class="blog-tag">Validation</span>
+          <span class="blog-tag">Best Practices</span>
+        </div>
+
+        <nav class="blog-navigation">
+          <a href="../blog.html" class="blog-nav-link prev">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Blog
+          </a>
+          <a href="jsonpath-techniques.html" class="blog-nav-link next">
+            Next Article
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </nav>
+      </article>
+    </div>
+
+    <!-- Footer -->
+    <footer class="minimalist-footer">
+      <div class="minimalist-footer-container">
+        <div class="minimalist-footer-content">
+          <div class="minimalist-footer-left">
+            <div class="minimalist-footer-logo">
+              <span class="minimalist-footer-logo-icon">{}</span>
+              <span class="minimalist-footer-logo-text"
+                >JSON Formatter Tool</span
+              >
+            </div>
+            <p class="minimalist-footer-tagline">
+              A powerful yet simple tool for formatting, validating, and
+              transforming JSON data with ease.
+            </p>
+            <div class="minimalist-social-icons">
+              <a href="#" class="minimalist-social-icon" aria-label="Github">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="Twitter">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="minimalist-social-icon" aria-label="LinkedIn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  ></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="minimalist-footer-right">
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Navigation</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../faq.html">FAQ</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+              </ul>
+            </div>
+
+            <div class="minimalist-footer-nav">
+              <h4 class="minimalist-footer-nav-title">Legal</h4>
+              <ul class="minimalist-footer-links">
+                <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="../sitemap.html">Sitemap</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="minimalist-footer-bottom">
+          <div class="minimalist-footer-copyright">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            JSON Formatter Tool. All rights reserved.
+          </div>
+          <div class="minimalist-footer-made-with">
+            Made with <span class="minimalist-heart">♥</span> for developers
+            worldwide
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
