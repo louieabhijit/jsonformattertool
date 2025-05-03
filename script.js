@@ -1,3 +1,4 @@
+// Utility functions
 // Add debounce utility function
 function debounce(func, wait) {
   let timeout;
@@ -9,47 +10,7 @@ function debounce(func, wait) {
   };
 }
 
-// Add line numbers utility function
-function updateLineNumbers(containerId, text) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  
-  const lines = text.split('\n');
-  const lineCount = lines.length;
-  
-  let html = '';
-  for (let i = 1; i <= lineCount; i++) {
-    html += `<span class="line">${i}</span>`;
-  }
-  
-  container.innerHTML = html;
-}
-
-// Validate JSON function
-function validateJSON() {
-  const input = document.getElementById("json-input").value.trim();
-  const indicator = document.getElementById("validation-indicator");
-  
-  if (!input) {
-    if (indicator) {
-      indicator.className = "validation-indicator";
-      indicator.classList.remove("visible");
-    }
-    return;
-  }
-  
-  try {
-    JSON.parse(input);
-    if (indicator) {
-      indicator.className = "validation-indicator valid visible";
-    }
-  } catch (e) {
-    if (indicator) {
-      indicator.className = "validation-indicator invalid visible";
-    }
-  }
-}
-
+// Function for JSON validation status updates
 function updateValidationStatus(isValid, error = null) {
   const validationStatus = document.querySelector('.validation-status');
   const validationDetails = document.querySelector('.validation-details');
@@ -121,6 +82,7 @@ function updateValidationStatus(isValid, error = null) {
   }
 }
 
+// HTML Escaping
 function escapeHTML(text) {
   return text
     .replace(/&/g, "&amp;")
@@ -128,6 +90,47 @@ function escapeHTML(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+// Add line numbers utility function
+function updateLineNumbers(containerId, text) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  const lines = text.split('\n');
+  const lineCount = lines.length;
+  
+  let html = '';
+  for (let i = 1; i <= lineCount; i++) {
+    html += `<span class="line">${i}</span>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+// Validate JSON function
+function validateJSON() {
+  const input = document.getElementById("json-input").value.trim();
+  const indicator = document.getElementById("validation-indicator");
+  
+  if (!input) {
+    if (indicator) {
+      indicator.className = "validation-indicator";
+      indicator.classList.remove("visible");
+    }
+    return;
+  }
+  
+  try {
+    JSON.parse(input);
+    if (indicator) {
+      indicator.className = "validation-indicator valid visible";
+    }
+  } catch (e) {
+    if (indicator) {
+      indicator.className = "validation-indicator invalid visible";
+    }
+  }
 }
 
 function buildJsonPathTree(obj) {
@@ -363,7 +366,11 @@ function formatJSON() {
     output.textContent = JSON.stringify(obj, null, 2);
     output.className = "output success";
     animateOutput();
-    updateValidationStatus(true);
+    
+    // Check if updateValidationStatus exists before calling
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(true);
+    }
     
     // Update line numbers for output
     updateLineNumbers('output-line-numbers', output.textContent);
@@ -382,7 +389,11 @@ function formatJSON() {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
     animateOutput();
-    updateValidationStatus(false, e);
+    
+    // Check if updateValidationStatus exists before calling
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(false, e);
+    }
     
     // Still make sure the output container is visible on error
     const outputContainer = document.querySelector('.output-container');
@@ -411,7 +422,11 @@ function minifyJSON() {
     output.textContent = JSON.stringify(obj);
     output.className = "output info";
     animateOutput();
-    updateValidationStatus(true);
+    
+    // Check if updateValidationStatus exists before calling
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(true);
+    }
     
     // Update line numbers for output
     updateLineNumbers('output-line-numbers', output.textContent);
@@ -419,7 +434,11 @@ function minifyJSON() {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
     animateOutput();
-    updateValidationStatus(false, e);
+    
+    // Check if updateValidationStatus exists before calling
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(false, e);
+    }
   }
 }
 
