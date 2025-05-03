@@ -53,6 +53,16 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Apply dark mode immediately
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme !== "light") {
+          document.documentElement.classList.add("dark-mode");
+          document.body.classList.add("dark-mode");
+        }
+      })();
+    </script>
     <script src="script.js" defer></script>
     <!-- Google tag (gtag.js) -->
     <script
@@ -75,7 +85,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body class="dark-mode">
     <nav class="navbar">
       <a href="index.html" style="text-decoration: none; color: inherit">
         <div class="brand-container">

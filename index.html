@@ -75,6 +75,16 @@
         }
       }
     </script>
+    <script>
+      // Apply dark mode immediately
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme !== "light") {
+          document.documentElement.classList.add("dark-mode");
+          document.body.classList.add("dark-mode");
+        }
+      })();
+    </script>
     <script src="script.js" defer></script>
     <!-- Google tag (gtag.js) -->
     <script

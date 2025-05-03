@@ -947,26 +947,34 @@ function toggleTheme() {
     localStorage.setItem('theme', 'dark');
   }
   
-  // Update the validation status to adjust styles
-  validateJSON();
+  // Update the validation status to adjust styles if function exists
+  if (typeof validateJSON === 'function' && document.getElementById('validation-indicator')) {
+    validateJSON();
+  }
 }
 
 // Apply theme function
 function applyTheme() {
   const savedTheme = localStorage.getItem('theme');
+  // Default to dark mode unless explicitly set to light
   if (savedTheme === 'light') {
     document.body.classList.remove('dark-mode');
   } else {
-    // Set dark mode as default
+    // Always set dark mode as default
     document.body.classList.add('dark-mode');
+    // If no theme is saved yet, save dark as the default
+    if (!savedTheme) {
+      localStorage.setItem('theme', 'dark');
+    }
   }
   
-  // Update validation indicator based on the applied theme
-  validateJSON();
+  // Update validation indicator based on the applied theme if it exists
+  if (typeof validateJSON === 'function' && document.getElementById('validation-indicator')) {
+    validateJSON();
+  }
 }
 
-// Call applyTheme immediately for initial load
-applyTheme();
+// Theme will be applied in DOMContentLoaded
 
 function setupDragAndDrop() {
   const dropArea = document.getElementById('drop-area');
@@ -1126,39 +1134,78 @@ function setupKeyboardShortcuts() {
   }
   
 document.addEventListener('DOMContentLoaded', function() {
+  // Apply theme first to prevent flash of unstyled content
+  applyTheme();
+  
   // Initialize the hamburger menu
   const hamburgerMenu = document.getElementById('hamburger-menu');
+  const navActions = document.querySelector('.nav-actions');
   
   if (hamburgerMenu) {
     const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
-  const navActions = document.querySelector('.nav-actions');
-  
+    
+    // Different pages have different hamburger menu implementations
+    if (hamburgerCheckbox) {
+      // Index.html style with checkbox
       hamburgerCheckbox.addEventListener('change', function() {
         if (this.checked) {
           navActions.classList.add('mobile-open');
         } else {
           navActions.classList.remove('mobile-open');
         }
-  });
-  
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', function(e) {
-      if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
-      navActions.classList.remove('mobile-open');
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+          navActions.classList.remove('mobile-open');
           hamburgerCheckbox.checked = false;
-    }
-  });
-  
-  // Close mobile menu when a link is clicked
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      if (navActions.classList.contains('mobile-open')) {
-        navActions.classList.remove('mobile-open');
+        }
+      });
+      
+      // Close mobile menu when a link is clicked
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (navActions.classList.contains('mobile-open')) {
+            navActions.classList.remove('mobile-open');
             hamburgerCheckbox.checked = false;
-      }
-    });
-  });
+          }
+        });
+      });
+    } else {
+      // About.html style with button
+      let menuOpen = false;
+      
+      hamburgerMenu.addEventListener('click', function() {
+        if (menuOpen) {
+          navActions.classList.remove('mobile-open');
+          menuOpen = false;
+        } else {
+          navActions.classList.add('mobile-open');
+          menuOpen = true;
+        }
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (menuOpen && !hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+          navActions.classList.remove('mobile-open');
+          menuOpen = false;
+        }
+      });
+      
+      // Close mobile menu when a link is clicked
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (menuOpen && navActions.classList.contains('mobile-open')) {
+            navActions.classList.remove('mobile-open');
+            menuOpen = false;
+          }
+        });
+      });
+    }
   }
   
   // Set current year in the footer
