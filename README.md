@@ -40,4 +40,7 @@ Simply open `index.html` in your browser to start using the tool locally.
 
 This project is licensed under the MIT License - see the LICENSE file for details. # jsonformattertool
 # jsonformattertool
+<<<<<<< HEAD
 # jsonformattertool
+=======
+>>>>>>> 87ac7e74c63956b7daa6e0c12a28eb0cc93b9e0d
