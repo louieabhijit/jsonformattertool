@@ -97,7 +97,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body class="dark-mode">
     <nav class="navbar">
       <a href="index.html" style="text-decoration: none; color: inherit">
         <div class="brand-container">
@@ -428,8 +428,37 @@
 
                 <div class="result-header">
                   <span>Value Preview</span>
+                  <button
+                    id="copy-jsonpath-value"
+                    class="btn-icon"
+                    title="Copy Value"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect
+                        x="9"
+                        y="9"
+                        width="13"
+                        height="13"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path
+                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                      ></path>
+                    </svg>
+                  </button>
                 </div>
-                <pre id="jsonpath-value" class="jsonpath-value">
+                <pre id="jsonpath-value" class="jsonpath-value code-editor">
 Select a node in the tree to see its value</pre
                 >
               </div>

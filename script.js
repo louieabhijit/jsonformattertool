@@ -131,6 +131,11 @@ function validateJSON() {
     if (typeof updateValidationStatus === 'function') {
       updateValidationStatus(true);
     }
+    
+    // Apply syntax highlighting to input if valid
+    applyInputSyntaxHighlighting();
+    
+    return true; // Return true if valid
   } catch (e) {
     if (indicator) {
       indicator.className = "validation-indicator invalid visible";
@@ -140,6 +145,8 @@ function validateJSON() {
     if (typeof updateValidationStatus === 'function') {
       updateValidationStatus(false, e);
     }
+    
+    return false; // Return false if invalid
   }
 }
 
@@ -181,9 +188,9 @@ function buildJsonPathTree(obj) {
         const jsonPathValue = document.getElementById('jsonpath-value');
         if (jsonPathValue) {
           if (typeof value === 'object' && value !== null) {
-            jsonPathValue.textContent = JSON.stringify(value, null, 2);
+            jsonPathValue.innerHTML = formatJSONWithHighlighting(JSON.stringify(value, null, 2));
           } else {
-            jsonPathValue.textContent = String(value);
+            jsonPathValue.innerHTML = formatValueWithHighlighting(value);
           }
         }
       } catch (e) {
@@ -354,6 +361,60 @@ function getValueAtPath(obj, path) {
   return result;
 }
 
+function formatJSONWithHighlighting(jsonString) {
+  if (!jsonString) return '';
+  
+  return jsonString
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+      let cls = 'number';
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'key';
+          // Remove the colon from the key
+          match = match.replace(/:$/, '');
+          // Add the colon with punctuation class
+          return '<span class="' + cls + '">' + match + '</span><span class="punctuation">:</span>';
+        } else {
+          cls = 'string';
+        }
+      } else if (/true|false/.test(match)) {
+        cls = 'boolean';
+      } else if (/null/.test(match)) {
+        cls = 'null';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    })
+    .replace(/\{|\}|\[|\]|,/g, function(match) {
+      return '<span class="punctuation">' + match + '</span>';
+    })
+    .replace(/\n( +)/g, function(match, p1) {
+      return '\n<span class="indent">' + p1 + '</span>';
+    });
+}
+
+function formatValueWithHighlighting(value) {
+  if (value === undefined) return '<span class="null">undefined</span>';
+  
+  if (value === null) return '<span class="null">null</span>';
+  
+  if (typeof value === 'string') {
+    return '<span class="string">"' + value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '"</span>';
+  }
+  
+  if (typeof value === 'number') {
+    return '<span class="number">' + value + '</span>';
+  }
+  
+  if (typeof value === 'boolean') {
+    return '<span class="boolean">' + value + '</span>';
+  }
+  
+  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function formatJSON() {
   const input = document.getElementById("json-input").value;
   const output = document.getElementById("json-output");
@@ -372,8 +433,9 @@ function formatJSON() {
       outputContainer.style.display = 'block';
     }
     
-    // Create the output
-    output.textContent = JSON.stringify(obj, null, 2);
+    // Apply syntax highlighting to the formatted JSON
+    const formatted = JSON.stringify(obj, null, 2);
+    output.innerHTML = formatJSONWithHighlighting(formatted);
     output.className = "output success";
     animateOutput();
     
@@ -386,7 +448,7 @@ function formatJSON() {
     }
     
     // Update line numbers for output
-    updateLineNumbers('output-line-numbers', output.textContent);
+    updateLineNumbers('output-line-numbers', formatted);
     
     // Update the JSON Path finder with the parsed object
     buildJsonPathTree(obj);
@@ -435,7 +497,8 @@ function minifyJSON() {
   
   try {
     const obj = JSON.parse(input);
-    output.textContent = JSON.stringify(obj);
+    const minified = JSON.stringify(obj);
+    output.innerHTML = formatJSONWithHighlighting(minified);
     output.className = "output info";
     animateOutput();
     
@@ -448,7 +511,7 @@ function minifyJSON() {
     }
     
     // Update line numbers for output
-    updateLineNumbers('output-line-numbers', output.textContent);
+    updateLineNumbers('output-line-numbers', minified);
   } catch (e) {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
@@ -465,14 +528,17 @@ function minifyJSON() {
 }
 
 function copyJSON() {
-  const output = document.getElementById("json-output").textContent;
+  const output = document.getElementById("json-output");
   
-  if (!output.trim() || output.includes("Invalid JSON")) {
+  if (!output || !output.textContent.trim() || output.textContent.includes("Invalid JSON")) {
     showToast("Nothing to copy");
     return;
   }
   
-  navigator.clipboard.writeText(output).then(() => {
+  // We need to get the plain text from the highlighted HTML content
+  const plainText = output.textContent;
+  
+  navigator.clipboard.writeText(plainText).then(() => {
     showToast("JSON copied to clipboard!");
   });
 }
@@ -738,23 +804,12 @@ function downloadYAML() {
 
 function handleFileUpload(file) {
   if (!file) {
-    showToast("No file selected");
     return;
   }
   
-  // Check file size (limit to 5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    showToast("File too large. Please upload a file smaller than 5MB");
-    return;
-  }
-  
-  // Check file type
-  const isJsonFile = file.type === 'application/json' || 
-                     file.name.toLowerCase().endsWith('.json') ||
-                     file.name.toLowerCase().endsWith('.jsonl');
-                     
-  if (!isJsonFile) {
-    showToast("Please upload a valid JSON file (.json)");
+  // Check if the file is a JSON file
+  if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+    showToast('Please upload a JSON file');
     return;
   }
   
@@ -763,59 +818,41 @@ function handleFileUpload(file) {
   reader.onload = function(e) {
     try {
       const content = e.target.result;
+      const jsonObj = JSON.parse(content);
       
-      // Check if content is empty
-      if (!content.trim()) {
-        showToast("The file is empty");
-        return;
-      }
+      // Format the JSON with proper indentation
+      const formattedJson = JSON.stringify(jsonObj, null, 2);
       
-      const jsonObject = JSON.parse(content);
+      // Update the input field with the formatted JSON
+      const jsonInput = document.getElementById('json-input');
+      jsonInput.value = formattedJson;
       
-      const textarea = document.getElementById("json-input");
-      if (textarea) textarea.value = content;
+      // Update line numbers
+      updateLineNumbers('input-line-numbers', formattedJson);
       
-      // Update input line numbers
-      updateLineNumbers('input-line-numbers', content);
+      // Update validation
+      validateJSON();
       
-      // Automatically format the JSON after loading the file
-      const output = document.getElementById("json-output");
-      if (output) {
-        output.textContent = JSON.stringify(jsonObject, null, 2);
-        output.className = "output success";
-        animateOutput();
-        
-        // Check if updateValidationStatus exists before calling
-        if (typeof updateValidationStatus === 'function') {
-          updateValidationStatus(true);
-        }
-        
-        // Update output line numbers
-        updateLineNumbers('output-line-numbers', output.textContent);
-      }
+      // Automatically format and display the output
+      const output = document.getElementById('json-output');
+      output.innerHTML = formatJSONWithHighlighting(formattedJson);
+      output.className = "output success";
+      
+      // Update line numbers for output
+      updateLineNumbers('output-line-numbers', formattedJson);
       
       // Update the JSON Path finder with the parsed object
-      buildJsonPathTree(jsonObject);
+      buildJsonPathTree(jsonObj);
       
-      showToast("JSON file loaded successfully!");
-    } catch (error) {
-      showToast("Error parsing JSON: " + error.message);
-      
-      const textarea = document.getElementById("json-input");
-      if (textarea) textarea.value = e.target.result;
-      
-      // Update input line numbers even for invalid JSON
-      updateLineNumbers('input-line-numbers', e.target.result);
-      
-      // Check if updateValidationStatus exists before calling
-      if (typeof updateValidationStatus === 'function') {
-        updateValidationStatus(false, error);
-      }
+      // Show success toast
+      showToast('File uploaded and formatted successfully!');
+    } catch (e) {
+      showToast('Error parsing JSON file: ' + e.message);
     }
   };
   
   reader.onerror = function() {
-    showToast("Error reading the file. Please try again.");
+    showToast('Error reading file');
   };
   
   reader.readAsText(file);
@@ -852,63 +889,47 @@ function animateOutput() {
 }
 
 function addSampleJSON() {
-  const jsonInput = document.getElementById("json-input");
-  
-  // Example JSON data with various types
   const sampleJSON = {
-    "name": "JSON Formatter Tool",
-    "version": 1.0,
-    "isActive": true,
-    "features": [
-      "Format JSON with proper indentation",
-      "Validate JSON syntax",
-      "Convert to different formats",
-      "Download formatted JSON"
-    ],
-    "settings": {
-      "theme": "auto",
-      "indentSize": 2,
-      "maxOutputSize": 5000
-    },
-    "stats": {
-      "users": 1000,
-      "rating": 4.8,
-      "lastUpdated": "2023-09-15"
-    },
-    "nested": {
-      "level1": {
-        "level2": {
-          "level3": {
-            "message": "Deep nesting is handled properly"
+    "glossary": {
+      "title": "example glossary",
+      "GlossDiv": {
+        "title": "S",
+        "GlossList": {
+          "GlossEntry": {
+            "ID": "SGML",
+            "SortAs": "SGML",
+            "GlossTerm": "Standard Generalized Markup Language",
+            "Acronym": "SGML",
+            "Abbrev": "ISO 8879:1986",
+            "GlossDef": {
+              "para": "A meta-markup language, used to create markup languages such as DocBook.",
+              "GlossSeeAlso": ["GML", "XML"]
+            },
+            "GlossSee": "markup"
           }
         }
       }
     },
-    "nullExample": null,
-    "arrayWithObjects": [
-      { "id": 1, "name": "First item" },
-      { "id": 2, "name": "Second item" },
-      { "id": 3, "name": "Third item" }
-    ]
+    "numbers": [1, 2, 3, 42, 98.6, 100],
+    "boolean_values": { "true": true, "false": false },
+    "null_value": null,
+    "current_date": new Date().toISOString()
   };
   
-  jsonInput.value = JSON.stringify(sampleJSON, null, 2);
+  const jsonInput = document.getElementById("json-input");
+  const formattedJSON = JSON.stringify(sampleJSON, null, 2);
   
-  // Trigger validation and formatting
-  validateJSON();
-  formatJSON();
-  
-  // Update line numbers
-  updateLineNumbers('input-line-numbers', jsonInput.value);
-  
-  const indicator = document.getElementById("validation-indicator");
-  if (indicator) {
-    indicator.className = "validation-indicator valid visible";
-  }
-  
-  // Check if updateValidationStatus exists before calling
-  if (typeof updateValidationStatus === 'function') {
-    updateValidationStatus(true);
+  if (jsonInput) {
+    jsonInput.value = formattedJSON;
+    
+    // Update input line numbers
+    updateLineNumbers('input-line-numbers', formattedJSON);
+    
+    // Call format function to update output
+    formatJSON();
+    
+    // Apply syntax highlighting to input
+    applyInputSyntaxHighlighting();
   }
 }
 
@@ -916,30 +937,36 @@ function addSampleJSON() {
 
 function toggleTheme() {
   const body = document.body;
-  const themeButton = document.getElementById("toggle-theme");
+  const isDarkMode = body.classList.contains('dark-mode');
   
-  if (body.classList.contains("dark-mode")) {
-    body.classList.remove("dark-mode");
-    localStorage.setItem("theme", "light");
+  if (isDarkMode) {
+    body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
   } else {
-    body.classList.add("dark-mode");
-    localStorage.setItem("theme", "dark");
+    body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
   }
   
-  const ripple = document.createElement("span");
-  ripple.className = "ripple";
-  themeButton.appendChild(ripple);
-  
-  setTimeout(() => ripple.remove(), 600);
+  // Update the validation status to adjust styles
+  validateJSON();
 }
 
-// Immediately apply theme from local storage at the start (no delay)
-(function applyTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
+// Apply theme function
+function applyTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    document.body.classList.remove('dark-mode');
+  } else {
+    // Set dark mode as default
+    document.body.classList.add('dark-mode');
   }
-})();
+  
+  // Update validation indicator based on the applied theme
+  validateJSON();
+}
+
+// Call applyTheme immediately for initial load
+applyTheme();
 
 function setupDragAndDrop() {
   const dropArea = document.getElementById('drop-area');
@@ -990,6 +1017,114 @@ function setupDragAndDrop() {
   }
 }
 
+// Function to handle paste from clipboard
+function pasteFromClipboard() {
+  // Add ripple effect to button
+  const pasteButton = document.getElementById('paste-button');
+  if (pasteButton) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    pasteButton.appendChild(ripple);
+    
+    // Remove ripple after animation completes
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  }
+
+  navigator.clipboard.readText()
+    .then(text => {
+      const jsonInput = document.getElementById("json-input");
+      if (jsonInput) {
+        jsonInput.value = text;
+        
+        // Update line numbers
+        updateLineNumbers('input-line-numbers', text);
+        
+        // Validate and potentially format the pasted JSON
+        validateJSON();
+        
+        // Try to format the JSON if it's valid
+        try {
+          const obj = JSON.parse(text);
+          
+          // Make sure the output container is visible
+          const outputContainer = document.querySelector('.output-container');
+          if (outputContainer) {
+            outputContainer.style.display = 'block';
+          }
+          
+          // Update output
+          const output = document.getElementById("json-output");
+          output.textContent = JSON.stringify(obj, null, 2);
+          output.className = "output success";
+          animateOutput();
+          
+          // Update output line numbers
+          updateLineNumbers('output-line-numbers', output.textContent);
+          
+          // Update JSON path finder
+          buildJsonPathTree(obj);
+          
+          showToast("JSON pasted and formatted!");
+        } catch (e) {
+          // If it's not valid JSON, just paste the text
+          showToast("Text pasted from clipboard");
+        }
+      }
+    })
+    .catch(err => {
+      showToast("Failed to read clipboard: " + err.message);
+    });
+}
+
+// Add function to create paste button in the input container
+function addPasteButton() {
+  const inputContainer = document.querySelector('.input-container');
+  
+  if (inputContainer) {
+    // Check if button already exists
+    if (!document.getElementById('paste-button')) {
+      // Create paste button
+      const pasteButton = document.createElement('button');
+      pasteButton.id = 'paste-button';
+      pasteButton.className = 'paste-button';
+      pasteButton.setAttribute('title', 'Paste');
+      pasteButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </svg>
+      `;
+      
+      // Add click event listener
+      pasteButton.addEventListener('click', pasteFromClipboard);
+      
+      // Append to input container
+      inputContainer.appendChild(pasteButton);
+    }
+  }
+}
+
+// Set up keyboard shortcuts
+function setupKeyboardShortcuts() {
+  document.addEventListener('keydown', function(e) {
+    // Check for Ctrl+V or Cmd+V (paste) when focus is not in the textarea
+    if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+      const activeElement = document.activeElement;
+      const jsonInput = document.getElementById('json-input');
+      
+      // Only handle the shortcut if we're not already in the input field
+      if (activeElement !== jsonInput && 
+          activeElement.tagName !== 'INPUT' && 
+          activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        pasteFromClipboard();
+      }
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the hamburger menu
   const hamburgerMenu = document.getElementById('hamburger-menu');
@@ -1032,44 +1167,19 @@ document.addEventListener('DOMContentLoaded', function() {
     currentYearSpan.textContent = new Date().getFullYear();
   }
   
-  // Toggle dark mode functionality
-  const toggleTheme = document.getElementById('toggle-theme');
-  const body = document.body;
-
-  // Check for saved theme preference
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-  }
-
-  // Toggle dark mode when button is clicked
-  if (toggleTheme) {
-  toggleTheme.addEventListener('click', function(e) {
-    body.classList.toggle('dark-mode');
-    
-    // Create ripple effect
-    const ripple = document.createElement('span');
-    ripple.classList.add('ripple');
-    toggleTheme.appendChild(ripple);
-    
-    const rect = toggleTheme.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    
-    ripple.style.width = ripple.style.height = `${size}px`;
-    ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-    ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-    
-    ripple.addEventListener('animationend', function() {
-      ripple.remove();
+  // Set up theme toggle
+  const themeToggleBtn = document.getElementById("toggle-theme");
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", function() {
+      toggleTheme();
+      
+      // Add ripple animation effect
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      this.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 600);
     });
-    
-    // Save theme preference
-    if (body.classList.contains('dark-mode')) {
-      localStorage.setItem('theme', 'dark');
-    } else {
-      localStorage.setItem('theme', 'light');
-    }
-  });
   }
   
   // Handle dropdowns for mobile view
@@ -1162,8 +1272,11 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => formatJSON(), 0);
     });
     
-    // Keep the existing input event for real-time validation
+    // Find the JSON input's 'input' event listener and update it:
     jsonInput.addEventListener('input', debounce(function() {
+      // Apply real-time syntax highlighting to input
+      applyInputSyntaxHighlighting();
+      
       // Explicitly call validateJSON to update the indicator
       validateJSON();
       
@@ -1182,12 +1295,13 @@ document.addEventListener('DOMContentLoaded', function() {
             outputContainer.style.display = 'block';
           }
           
-          output.textContent = JSON.stringify(obj, null, 2);
+          const formatted = JSON.stringify(obj, null, 2);
+          output.innerHTML = formatJSONWithHighlighting(formatted);
           output.className = "output success";
           animateOutput();
           
           // Update output line numbers
-          updateLineNumbers('output-line-numbers', output.textContent);
+          updateLineNumbers('output-line-numbers', formatted);
           
           // Update the JSON Path finder with the parsed object
           buildJsonPathTree(obj);
@@ -1231,7 +1345,10 @@ document.addEventListener('DOMContentLoaded', function() {
     addMobileFormatButton();
     
     // Update the button when window is resized
-    window.addEventListener('resize', addMobileFormatButton);
+    window.addEventListener('resize', function() {
+      addMobileFormatButton();
+      addPasteButton(); // Ensure paste button is added after resize
+    });
     
     // Sync scrolling between textarea and line numbers
     jsonInput.addEventListener('scroll', function() {
@@ -1351,6 +1468,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initial validation
   validateJSON();
   
+  // Setup input formatting on blur
+  setupInputFormatting();
+  
   // Ensure the output container is properly initialized
   const outputContainer = document.querySelector('.output-container');
   if (outputContainer) {
@@ -1361,4 +1481,156 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Mobile menu is already initialized in the document ready handler
-}); 
+  
+  // Add paste button to input container
+  addPasteButton();
+  
+  // Setup keyboard shortcuts
+  setupKeyboardShortcuts();
+  
+  // Add copy button for JSONPath value
+  const copyJsonPathValueBtn = document.getElementById('copy-jsonpath-value');
+  if (copyJsonPathValueBtn) {
+    copyJsonPathValueBtn.addEventListener('click', function() {
+      const jsonPathValue = document.getElementById('jsonpath-value');
+      if (jsonPathValue) {
+        // Create a temporary textarea to hold the plain text (without HTML formatting)
+        const textarea = document.createElement('textarea');
+        // Get text content (without HTML tags)
+        textarea.value = jsonPathValue.textContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        // Add ripple effect
+        addRippleEffect(this);
+        
+        // Show toast
+        showToast('Value copied to clipboard');
+      }
+    });
+  }
+  
+  // Initial setup
+  validateJSON();
+  setupInputFormatting();
+  
+  // Apply syntax highlighting to any initial input
+  applyInputSyntaxHighlighting();
+  
+  // Check for initial content and format it
+  const initialInput = jsonInput.value.trim();
+  if (initialInput) {
+    try {
+      const obj = JSON.parse(initialInput);
+      const formatted = JSON.stringify(obj, null, 2);
+      jsonInput.value = formatted;
+      updateLineNumbers('input-line-numbers', formatted);
+      
+      // Update output with highlighted content
+      const output = document.getElementById("json-output");
+      output.innerHTML = formatJSONWithHighlighting(formatted);
+      output.className = "output success";
+      
+      // Update the JSON Path finder with the parsed object
+      buildJsonPathTree(obj);
+    } catch (e) {
+      // Invalid initial JSON, just update line numbers
+      updateLineNumbers('input-line-numbers', initialInput);
+    }
+  }
+});
+
+// Add this after formatJSONWithHighlighting function
+function highlightInputJson() {
+  const input = document.getElementById('json-input');
+  if (!input) return;
+  
+  try {
+    // Only highlight if we have valid JSON
+    const jsonText = input.value.trim();
+    if (!jsonText) return;
+    
+    JSON.parse(jsonText); // Just to validate, we don't use the result
+    
+    // If valid, we can safely format for next time the user focuses away
+    // We don't format directly to avoid changing user's editing position
+    input.dataset.validJson = 'true';
+  } catch (e) {
+    // If invalid JSON, remove the valid flag
+    delete input.dataset.validJson;
+    return; // Don't try to highlight invalid JSON
+  }
+}
+
+// Add an event to format the input when the user blurs the textarea
+function setupInputFormatting() {
+  const input = document.getElementById('json-input');
+  if (!input) return;
+  
+  input.addEventListener('blur', function() {
+    // Only format if the JSON was valid on last check
+    if (input.dataset.validJson === 'true') {
+      try {
+        const jsonText = input.value.trim();
+        if (!jsonText) return;
+        
+        const parsed = JSON.parse(jsonText);
+        input.value = JSON.stringify(parsed, null, 2);
+        
+        // Update line numbers for the new formatted text
+        updateLineNumbers('input-line-numbers', input.value);
+      } catch (e) {
+        // If somehow it's now invalid, remove the flag
+        delete input.dataset.validJson;
+      }
+    }
+  });
+}
+
+// Add this after highlightInputJson function
+function applyInputSyntaxHighlighting() {
+  const jsonInput = document.getElementById('json-input');
+  if (!jsonInput) return;
+  
+  // Create a syntax highlight overlay if it doesn't exist
+  let syntaxOverlay = document.getElementById('syntax-highlight-overlay');
+  if (!syntaxOverlay) {
+    syntaxOverlay = document.createElement('div');
+    syntaxOverlay.id = 'syntax-highlight-overlay';
+    syntaxOverlay.className = 'syntax-highlight-overlay';
+    jsonInput.parentNode.insertBefore(syntaxOverlay, jsonInput);
+    
+    // Match scroll positions between overlay and textarea
+    jsonInput.addEventListener('scroll', function() {
+      syntaxOverlay.scrollTop = jsonInput.scrollTop;
+      syntaxOverlay.scrollLeft = jsonInput.scrollLeft;
+    });
+  }
+  
+  const jsonText = jsonInput.value;
+  try {
+    // Only apply highlighting if JSON is valid
+    if (jsonText.trim()) {
+      // First try to parse it to verify it's valid JSON
+      JSON.parse(jsonText);
+      
+      // Apply highlighting
+      syntaxOverlay.innerHTML = formatJSONWithHighlighting(jsonText);
+      syntaxOverlay.style.display = 'block';
+      
+      // Add highlighting class to the input
+      jsonInput.classList.add('has-highlighting');
+    } else {
+      syntaxOverlay.innerHTML = '';
+      syntaxOverlay.style.display = 'none';
+      jsonInput.classList.remove('has-highlighting');
+    }
+  } catch (e) {
+    // For invalid JSON, hide the overlay
+    syntaxOverlay.innerHTML = '';
+    syntaxOverlay.style.display = 'none';
+    jsonInput.classList.remove('has-highlighting');
+  }
+} 

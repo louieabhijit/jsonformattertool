@@ -544,9 +544,52 @@ textarea {
   overflow-y: auto;
 }
 
-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+/* Syntax highlight overlay for input container */
+.syntax-highlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 3rem; /* Align with textarea content */
+  right: 0;
+  height: 100%;
+  padding: 1rem;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  pointer-events: none;
+  z-index: 3; /* Above textarea */
+  font-size: 1rem;
+  line-height: 1.5;
+  background: transparent;
+  overflow: auto;
+}
+
+.syntax-highlight-overlay * {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Make textarea background transparent so overlay is visible */
+#json-input {
+  position: absolute;
+  top: 0;
+  left: 3rem; /* Align with line numbers */
+  right: 0;
+  bottom: 0;
+  width: calc(100% - 3rem);
+  background: transparent;
+  height: 300px;
+  line-height: 1.5;
+  z-index: 2; /* Between line numbers and overlay */
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  padding: 1rem;
+}
+
+#json-input.has-highlighting {
+  color: transparent !important;
+  caret-color: #000; /* Keep cursor visible */
+}
+
+body.dark-mode #json-input.has-highlighting {
+  caret-color: #fff;
 }
 
 .line-numbers {
@@ -554,7 +597,7 @@ textarea:focus {
   width: 3rem;
   text-align: right;
   color: #999;
-  font-family: monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 1rem;
   user-select: none;
   background: rgba(0, 0, 0, 0.03);
@@ -562,17 +605,13 @@ textarea:focus {
   line-height: 1.5;
   flex-shrink: 0;
   overflow-y: hidden;
+  position: relative;
+  z-index: 4; /* Above overlay and textarea */
 }
 
-/* Specific styles for input line numbers to handle resize */
-#input-line-numbers {
-  min-height: 300px; /* Match textarea initial height */
-  box-sizing: border-box;
-  overflow-y: hidden;
-  display: flex;
-  flex-direction: column;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
 }
 
 .line-numbers .line {
@@ -720,19 +759,24 @@ textarea:focus {
 
 .output {
   padding: 1rem 1rem 1rem 0.5rem;
-  font-family: monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-x: auto;
   overflow-y: auto;
   transition: var(--transition);
   min-height: 100px;
-  max-height: 700px; /* Increased from 500px */
+  max-height: 700px;
   line-height: 1.5;
   flex-grow: 1;
   counter-reset: line;
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* For Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+body.dark-mode .output {
+  background: rgba(40, 40, 40, 0);
+  color: #f1f1f1;
 }
 
 /* Customize scrollbars for better UX */
@@ -1584,7 +1628,7 @@ body.dark-mode .error-preview {
 }
 
 .jsonpath-value {
-  font-family: monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   background: rgba(0, 0, 0, 0.03);
   padding: 0.75rem;
   border-radius: 8px;
@@ -1595,7 +1639,35 @@ body.dark-mode .error-preview {
   font-size: 0.9rem;
   white-space: pre-wrap;
   word-break: break-word;
+  position: relative;
+  line-height: 1.4;
+  border-left: 3px solid rgba(102, 126, 234, 0.7);
 }
+
+/* IDE-like code highlighting for jsonpath-value */
+.jsonpath-value .string { color: #e6194B; }
+.jsonpath-value .number { color: #4363d8; }
+.jsonpath-value .boolean { color: #3cb44b; }
+.jsonpath-value .null { color: #911eb4; }
+.jsonpath-value .key { color: #f58231; font-weight: bold; }
+.jsonpath-value .operator { color: #42d4f4; }
+.jsonpath-value .punctuation { color: #666666; }
+.jsonpath-value .indent { opacity: 0.3; }
+
+body.dark-mode .jsonpath-value {
+  background: rgba(0, 0, 0, 0.2);
+  color: #ddd;
+  border-left: 3px solid rgba(114, 137, 218, 0.7);
+}
+
+/* Dark mode IDE-like code highlighting */
+body.dark-mode .jsonpath-value .string { color: #ff6b81; }
+body.dark-mode .jsonpath-value .number { color: #74b9ff; }
+body.dark-mode .jsonpath-value .boolean { color: #7bed9f; }
+body.dark-mode .jsonpath-value .null { color: #cea2e5; }
+body.dark-mode .jsonpath-value .key { color: #ffa502; font-weight: bold; }
+body.dark-mode .jsonpath-value .operator { color: #7efff5; }
+body.dark-mode .jsonpath-value .punctuation { color: #a4b0be; }
 
 .jsonpath-tips {
   display: flex;
@@ -1642,13 +1714,18 @@ body.dark-mode .error-preview {
 }
 
 .tree-label:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(102, 126, 234, 0.15);
+  transform: translateX(3px);
+  transition: all 0.2s ease;
 }
 
 .tree-label.selected {
-  background: rgba(102, 126, 234, 0.15);
+  background: rgba(102, 126, 234, 0.20);
   font-weight: 600;
-  color: #764ba2;
+  color: #4361ee;
+  border-left: 3px solid rgba(102, 126, 234, 0.6);
+  padding-left: 5px;
+  margin-left: -8px;
 }
 
 .tree-icon {
@@ -1703,36 +1780,38 @@ body.dark-mode .error-preview {
   margin-left: 5px;
   background: rgba(0, 0, 0, 0.05);
   color: #666;
+  font-weight: 500;
+  display: inline-block;
 }
 
 .tree-type.string {
-  background: rgba(255, 193, 7, 0.15);
-  color: #ff8f00;
+  background: rgba(255, 193, 7, 0.2);
+  color: #e65100;
 }
 
 .tree-type.number {
-  background: rgba(76, 175, 80, 0.15);
-  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.2);
+  color: #1b5e20;
 }
 
 .tree-type.boolean {
-  background: rgba(33, 150, 243, 0.15);
-  color: #1565c0;
+  background: rgba(33, 150, 243, 0.2);
+  color: #0d47a1;
 }
 
 .tree-type.object {
-  background: rgba(156, 39, 176, 0.15);
-  color: #7b1fa2;
+  background: rgba(156, 39, 176, 0.2);
+  color: #4a148c;
 }
 
 .tree-type.array {
-  background: rgba(233, 30, 99, 0.15);
-  color: #c2185b;
+  background: rgba(233, 30, 99, 0.2);
+  color: #880e4f;
 }
 
 .tree-type.null {
-  background: rgba(158, 158, 158, 0.15);
-  color: #616161;
+  background: rgba(158, 158, 158, 0.2);
+  color: #424242;
 }
 
 .tree-size {
@@ -1794,12 +1873,16 @@ body.dark-mode .tree-children {
 }
 
 body.dark-mode .tree-label:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(102, 126, 234, 0.25);
+  transform: translateX(3px);
 }
 
 body.dark-mode .tree-label.selected {
-  background: rgba(102, 126, 234, 0.25);
-  color: #a389cc;
+  background: rgba(102, 126, 234, 0.3);
+  color: #748ffc;
+  border-left: 3px solid rgba(114, 137, 218, 0.7);
+  padding-left: 5px;
+  margin-left: -8px;
 }
 
 body.dark-mode .tree-value {
@@ -4451,4 +4534,334 @@ body.dark-mode .hamburger:hover .line {
   body.dark-mode .nav-actions.mobile-open .dropdown:hover {
     background: rgba(67, 97, 238, 0.1);
   }
+}
+
+/* Paste Button Styles */
+.paste-button {
+  position: absolute;
+  right: 50px;
+  top: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(67, 97, 238, 0.1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--primary);
+  z-index: 50;
+  overflow: hidden; /* For ripple effect */
+}
+
+/* Paste button ripple animation */
+@keyframes paste-ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.paste-button .ripple {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(67, 97, 238, 0.3);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: paste-ripple 0.6s linear;
+  pointer-events: none;
+}
+
+body.dark-mode .paste-button .ripple {
+  background: rgba(76, 201, 240, 0.3);
+}
+
+.paste-button:hover {
+  background: rgba(67, 97, 238, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(67, 97, 238, 0.2);
+}
+
+.paste-button:active {
+  transform: translateY(0);
+}
+
+.paste-button svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.paste-button:hover svg {
+  transform: scale(1.1);
+}
+
+.paste-button::after {
+  content: "Paste";
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.paste-button:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+body.dark-mode .paste-button {
+  background: rgba(76, 201, 240, 0.1);
+  color: var(--tertiary);
+}
+
+body.dark-mode .paste-button:hover {
+  background: rgba(76, 201, 240, 0.2);
+  box-shadow: 0 3px 8px rgba(76, 201, 240, 0.2);
+}
+
+body.dark-mode .paste-button::after {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+/* Adjust validation indicator position to make room for paste button */
+.validation-indicator {
+  right: 95px;
+}
+
+@media (max-width: 768px) {
+  .paste-button {
+    top: 12px;
+    right: 45px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .paste-button svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .validation-indicator {
+    right: 85px;
+  }
+}
+
+/* Fix the tree type styles in dark mode to maintain distinctive colors */
+body.dark-mode .tree-type {
+  background: rgba(255, 255, 255, 0.05);
+  color: #aaa; /* This generic color is only applied to types not specified below */
+}
+
+body.dark-mode .tree-label .tree-type.string {
+  background: rgba(255, 193, 7, 0.25);
+  color: #ffd54f; /* Brighter gold for better visibility */
+}
+
+body.dark-mode .tree-label .tree-type.number {
+  background: rgba(76, 175, 80, 0.25);
+  color: #81c784; /* Light green */
+}
+
+body.dark-mode .tree-label .tree-type.boolean {
+  background: rgba(33, 150, 243, 0.25);
+  color: #64b5f6; /* Light blue */
+}
+
+body.dark-mode .tree-label .tree-type.object {
+  background: rgba(156, 39, 176, 0.25);
+  color: #ce93d8; /* Light purple */
+}
+
+body.dark-mode .tree-label .tree-type.array {
+  background: rgba(233, 30, 99, 0.25);
+  color: #f48fb1; /* Light pink */
+}
+
+body.dark-mode .tree-label .tree-type.null {
+  background: rgba(158, 158, 158, 0.25);
+  color: #e0e0e0; /* Light gray, brighter than before */
+}
+
+/* Enhance the selected tree node types - make them more prominent */
+.tree-label.selected .tree-type {
+  font-weight: 600;
+}
+
+/* Copy button for jsonpath value */
+.btn-icon#copy-jsonpath-value {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #764ba2, #667eea);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(118, 75, 162, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-icon#copy-jsonpath-value:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(118, 75, 162, 0.3);
+}
+
+.btn-icon#copy-jsonpath-value:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(118, 75, 162, 0.2);
+}
+
+.btn-icon#copy-jsonpath-value::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.btn-icon#copy-jsonpath-value:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.btn-icon#copy-jsonpath-value::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.4s ease-out;
+}
+
+.btn-icon#copy-jsonpath-value:hover::before {
+  transform: scale(1.3);
+}
+
+.btn-icon#copy-jsonpath-value svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-icon#copy-jsonpath-value:hover svg {
+  transform: scale(1.1);
+}
+
+body.dark-mode .btn-icon#copy-jsonpath-value {
+  background: linear-gradient(135deg, #9369b5, #8596ee);
+  box-shadow: 0 4px 8px rgba(118, 75, 162, 0.35);
+}
+
+body.dark-mode .btn-icon#copy-jsonpath-value:hover {
+  box-shadow: 0 6px 12px rgba(118, 75, 162, 0.45);
+}
+
+body.dark-mode .btn-icon#copy-jsonpath-value::after {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+/* IDE-like styling for output code */
+#json-output {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+/* Syntax highlighting colors for both input and output */
+.string, #json-output .string { color: #e6194B; }
+.number, #json-output .number { color: #4363d8; }
+.boolean, #json-output .boolean { color: #3cb44b; }
+.null, #json-output .null { color: #911eb4; }
+.key, #json-output .key { color: #f58231; font-weight: bold; }
+.operator, #json-output .operator { color: #42d4f4; }
+.punctuation, #json-output .punctuation { color: #666666; }
+.indent, #json-output .indent { opacity: 0.3; }
+
+/* Dark mode syntax highlighting colors */
+body.dark-mode .string, 
+body.dark-mode #json-output .string { color: #ff6b81; }
+body.dark-mode .number,
+body.dark-mode #json-output .number { color: #74b9ff; }
+body.dark-mode .boolean,
+body.dark-mode #json-output .boolean { color: #7bed9f; }
+body.dark-mode .null,
+body.dark-mode #json-output .null { color: #cea2e5; }
+body.dark-mode .key,
+body.dark-mode #json-output .key { color: #ffa502; }
+body.dark-mode .operator,
+body.dark-mode #json-output .operator { color: #7efff5; }
+body.dark-mode .punctuation,
+body.dark-mode #json-output .punctuation { color: #a4b0be; }
+
+/* Specific styles for input line numbers to handle resize */
+#input-line-numbers {
+  min-height: 300px; /* Match textarea initial height */
+  box-sizing: border-box;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.line-numbers .line {
+  position: relative;
+  height: 1.5rem;
+  display: block;
+}
+
+.line-numbers .line.error {
+  color: var(--danger);
+  font-weight: bold;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Dark mode styling for line numbers */
+body.dark-mode .input-container {
+  background: rgba(50, 50, 50, 0.8);
+}
+
+body.dark-mode #json-input {
+  color: #f1f1f1;
+}
+
+body.dark-mode .line-numbers {
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  color: #777;
 }
