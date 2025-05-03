@@ -4303,3 +4303,190 @@ body.dark-mode .right-column {
     top: 0;
   }
 }
+
+/* Minimalist Footer Styles */
+.minimalist-footer {
+  background: #f8f9fa;
+  padding: 4rem 0 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .minimalist-footer {
+  background: #1a1a2e;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.minimalist-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.minimalist-footer-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 4rem;
+  margin-bottom: 3rem;
+}
+
+.minimalist-footer-left {
+  flex: 1;
+}
+
+.minimalist-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.minimalist-footer-logo-icon {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.minimalist-footer-logo-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--primary), var(--tertiary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.minimalist-footer-tagline {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+body.dark-mode .minimalist-footer-tagline {
+  color: #aaa;
+}
+
+.minimalist-social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.minimalist-social-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(67, 97, 238, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .minimalist-social-icon {
+  background: rgba(67, 97, 238, 0.2);
+  color: var(--tertiary);
+}
+
+.minimalist-social-icon:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-3px);
+}
+
+.minimalist-footer-right {
+  display: flex;
+  gap: 4rem;
+}
+
+.minimalist-footer-nav {
+  min-width: 160px;
+}
+
+.minimalist-footer-nav-title {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+body.dark-mode .minimalist-footer-nav-title {
+  color: #fff;
+}
+
+.minimalist-footer-links {
+  list-style: none;
+}
+
+.minimalist-footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.minimalist-footer-links a {
+  color: #666;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+body.dark-mode .minimalist-footer-links a {
+  color: #aaa;
+}
+
+.minimalist-footer-links a:hover {
+  color: var(--primary);
+  transform: translateX(5px);
+}
+
+.minimalist-footer-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+body.dark-mode .minimalist-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aaa;
+}
+
+.minimalist-heart {
+  color: #e74c3c;
+  display: inline-block;
+  animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@media (max-width: 768px) {
+  .minimalist-footer {
+    padding: 3rem 0 1.5rem;
+  }
+  
+  .minimalist-footer-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .minimalist-footer-right {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .minimalist-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .minimalist-footer-logo-text {
+    font-size: 1.2rem;
+  }
+}
