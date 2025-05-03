@@ -1281,45 +1281,167 @@ body.dark-mode .file-upload-btn:hover {
 
 @media (max-width: 768px) {
   .navbar {
-    padding: 1rem;
-    position: relative; /* Ensure proper positioning context */
+    padding: 0.75rem 1rem;
   }
   
-  /* Make toggle-theme button visible on mobile */
+  .brand-container {
+    gap: 0.4rem;
+  }
+  
+  .navbar .logo {
+    font-size: 1rem;
+  }
+
+  .logo-animation {
+    width: 28px;
+    height: 28px;
+  }
+
+  .json-brackets {
+    font-size: 18px;
+  }
+
+  /* Theme toggle button positioning */
   #toggle-theme {
-    margin: 0.5rem auto;
-    display: block;
+    right: 65px !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 40px !important;
+    width: 40px !important;
+  }
+
+  .theme-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Rest of the mobile styles */
+  .nav-actions {
+    gap: 0.75rem;
+  }
+  
+  .nav-actions .nav-link,
+  .nav-actions .dropdown {
+    display: none;
+  }
+  
+  /* Show hamburger */
+  .hamburger {
+    display: block !important;
     position: absolute;
-    right: 70px; /* Position to the left of hamburger */
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1100;
   }
   
-  .left-column h1 {
-    font-size: 1.8rem;
-    max-width: 80%;
-  }
-  
-  .controls {
+  /* Mobile menu styles when open */
+  .nav-actions.mobile-open {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    text-align: center;
+    display: flex;
   }
   
-  .controls button {
+  body.dark-mode .nav-actions.mobile-open {
+    background: rgba(30, 30, 30, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .nav-actions.mobile-open .nav-link,
+  .nav-actions.mobile-open .dropdown {
+    display: block !important;
+    width: 100%;
+    padding: 0.75rem 2rem;
+  }
+  
+  .nav-actions.mobile-open .nav-link:hover,
+  .nav-actions.mobile-open .dropdown:hover {
+    background: rgba(67, 97, 238, 0.05);
+  }
+  
+  body.dark-mode .nav-actions.mobile-open .nav-link:hover,
+  body.dark-mode .nav-actions.mobile-open .dropdown:hover {
+    background: rgba(67, 97, 238, 0.1);
+  }
+
+  /* Dropdown styling for mobile */
+  .dropdown {
     width: 100%;
   }
   
-  /* Labels for input/output columns */
-  .left-column::before,
-  .right-column::before {
-    top: 1rem;
-    font-size: 0.65rem;
-    padding: 2px 6px;
+  .dropdown-btn {
+    width: 100%;
+    padding: 0.75rem 2rem;
+    justify-content: center;
+    text-align: center;
   }
-  
-  /* Remove the old responsive nav styles that we're replacing */
-  .nav-actions.responsive {
-    display: none;
+
+  .dropdown-content {
+    position: static;
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+    box-shadow: none;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .dropdown-content a {
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dropdown-content.show-mobile {
+    opacity: 1;
+    visibility: visible;
+    max-height: 300px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dropdown:hover .dropdown-content {
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+  }
+
+  .external-link-indicator {
+    position: relative;
+    right: auto;
+    margin-left: 0.5rem;
+  }
+
+  /* Ensure dropdown arrow is properly aligned */
+  .dropdown-arrow {
+    margin-left: 0.35rem;
   }
 }
 
