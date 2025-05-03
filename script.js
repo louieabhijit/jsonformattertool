@@ -1,3 +1,346 @@
+// Add debounce utility function
+function debounce(func, wait) {
+  let timeout;
+  return function() {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+}
+
+// Add line numbers utility function
+function updateLineNumbers(containerId, text) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  const lines = text.split('\n');
+  const lineCount = lines.length;
+  
+  let html = '';
+  for (let i = 1; i <= lineCount; i++) {
+    html += `<span class="line">${i}</span>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+// Validate JSON function
+function validateJSON() {
+  const input = document.getElementById("json-input").value.trim();
+  const indicator = document.getElementById("validation-indicator");
+  
+  if (!input) {
+    if (indicator) {
+      indicator.className = "validation-indicator";
+      indicator.classList.remove("visible");
+    }
+    return;
+  }
+  
+  try {
+    JSON.parse(input);
+    if (indicator) {
+      indicator.className = "validation-indicator valid visible";
+    }
+  } catch (e) {
+    if (indicator) {
+      indicator.className = "validation-indicator invalid visible";
+    }
+  }
+}
+
+function updateValidationStatus(isValid, error = null) {
+  const validationStatus = document.querySelector('.validation-status');
+  const validationDetails = document.querySelector('.validation-details');
+  
+  if (!validationStatus || !validationDetails) return;
+  
+  if (isValid) {
+    validationStatus.className = 'validation-status valid';
+    validationStatus.innerHTML = `
+      <div class="status-icon valid"></div>
+      <div class="status-message">Valid JSON</div>
+    `;
+    validationDetails.classList.remove('show');
+  } else {
+    validationStatus.className = 'validation-status invalid';
+    validationStatus.innerHTML = `
+      <div class="status-icon invalid"></div>
+      <div class="status-message">${error ? error.message : 'Invalid JSON'}</div>
+    `;
+    
+    if (error && error.message.includes('position')) {
+      try {
+        const posMatch = error.message.match(/position (\d+)/);
+        if (posMatch && posMatch[1]) {
+          const position = parseInt(posMatch[1]);
+          const input = document.getElementById("json-input").value;
+          
+          // Find line and column of the error
+          let line = 1;
+          let column = 1;
+          for (let i = 0; i < position; i++) {
+            if (input[i] === '\n') {
+              line++;
+              column = 1;
+            } else {
+              column++;
+            }
+          }
+          
+          // Get a snippet of the code around the error
+          const lines = input.split('\n');
+          const errorLine = lines[line - 1] || '';
+          const startLine = Math.max(0, line - 3);
+          const endLine = Math.min(lines.length, line + 2);
+          let snippet = '';
+          
+          for (let i = startLine; i < endLine; i++) {
+            if (i === line - 1) {
+              // Highlight the error line
+              snippet += `<div class="error-line-highlight">${i + 1}: ${escapeHTML(lines[i])}</div>`;
+            } else {
+              snippet += `${i + 1}: ${escapeHTML(lines[i])}\n`;
+            }
+          }
+          
+          validationDetails.innerHTML = `
+            <div class="error-location">
+              Error at <span class="error-line">line ${line}</span> <span class="error-column">column ${column}</span>
+            </div>
+            <div class="error-message">${error.message}</div>
+            <pre class="error-preview">${snippet}</pre>
+          `;
+          validationDetails.classList.add('show');
+        }
+      } catch (e) {
+        console.error('Error processing JSON validation details:', e);
+      }
+    }
+  }
+}
+
+function escapeHTML(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function buildJsonPathTree(obj) {
+  const treeContainer = document.querySelector('.jsonpath-tree');
+  if (!treeContainer) return;
+  
+  treeContainer.innerHTML = '';
+  
+  if (!obj) {
+    treeContainer.innerHTML = '<div class="tree-loader">No valid JSON data available</div>';
+    return;
+  }
+  
+  // Build tree recursively
+  const rootNode = buildTreeNode('root', obj, '$');
+  treeContainer.appendChild(rootNode);
+  
+  // Add click handlers to tree nodes
+  const treeLabels = document.querySelectorAll('.tree-label');
+  treeLabels.forEach(label => {
+    label.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      // Toggle selected state
+      document.querySelectorAll('.tree-label').forEach(l => l.classList.remove('selected'));
+      this.classList.add('selected');
+      
+      // Get JSONPath from data attribute
+      const jsonPath = this.getAttribute('data-path');
+      
+      // Update JSONPath expression display
+      const jsonPathExpr = document.getElementById('jsonpath-expression');
+      if (jsonPathExpr) jsonPathExpr.textContent = jsonPath;
+      
+      // Extract value at this path and display it
+      try {
+        const value = getValueAtPath(obj, jsonPath);
+        const jsonPathValue = document.getElementById('jsonpath-value');
+        if (jsonPathValue) {
+          if (typeof value === 'object' && value !== null) {
+            jsonPathValue.textContent = JSON.stringify(value, null, 2);
+          } else {
+            jsonPathValue.textContent = String(value);
+          }
+        }
+      } catch (e) {
+        console.error('Error getting value at path:', e);
+      }
+      
+      // Toggle expand/collapse if has children
+      const icon = this.querySelector('.tree-icon');
+      if (icon) {
+        const children = this.nextElementSibling;
+        if (children && children.classList.contains('tree-children')) {
+          if (icon.classList.contains('collapsed')) {
+            icon.classList.remove('collapsed');
+            icon.classList.add('expanded');
+            children.style.display = 'block';
+          } else {
+            icon.classList.remove('expanded');
+            icon.classList.add('collapsed');
+            children.style.display = 'none';
+          }
+        }
+      }
+    });
+  });
+}
+
+function buildTreeNode(key, value, path) {
+  const node = document.createElement('div');
+  node.className = 'tree-node';
+  
+  const label = document.createElement('div');
+  label.className = 'tree-label';
+  label.setAttribute('data-path', path);
+  
+  const icon = document.createElement('div');
+  icon.className = 'tree-icon';
+  
+  const keySpan = document.createElement('span');
+  keySpan.className = 'tree-key';
+  keySpan.textContent = key;
+  
+  label.appendChild(icon);
+  label.appendChild(keySpan);
+  
+  if (typeof value === 'object' && value !== null) {
+    // It's an object or array
+    const isArray = Array.isArray(value);
+    
+    icon.classList.add('collapsed');
+    
+    const typeSpan = document.createElement('span');
+    typeSpan.className = `tree-type ${isArray ? 'array' : 'object'}`;
+    typeSpan.textContent = isArray ? 'array' : 'object';
+    
+    const sizeSpan = document.createElement('span');
+    sizeSpan.className = 'tree-size';
+    const size = isArray ? value.length : Object.keys(value).length;
+    sizeSpan.textContent = `(${size})`;
+    
+    label.appendChild(typeSpan);
+    label.appendChild(sizeSpan);
+    
+    node.appendChild(label);
+    
+    // Create child nodes container
+    const children = document.createElement('div');
+    children.className = 'tree-children';
+    children.style.display = 'none'; // Start collapsed
+    
+    // Add child nodes
+    if (isArray) {
+      value.forEach((item, index) => {
+        const childPath = `${path}[${index}]`;
+        const childNode = buildTreeNode(index, item, childPath);
+        children.appendChild(childNode);
+      });
+    } else {
+      Object.keys(value).forEach(k => {
+        // Handle path formatting for keys with special characters
+        const childPath = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(k) ? 
+          `${path}.${k}` : `${path}['${k}']`;
+        const childNode = buildTreeNode(k, value[k], childPath);
+        children.appendChild(childNode);
+      });
+    }
+    
+    node.appendChild(children);
+  } else {
+    // It's a primitive value
+    const valueSpan = document.createElement('span');
+    valueSpan.className = 'tree-value';
+    
+    const typeSpan = document.createElement('span');
+    typeSpan.className = `tree-type ${typeof value}`;
+    
+    if (value === null) {
+      valueSpan.textContent = 'null';
+      typeSpan.className = 'tree-type null';
+      typeSpan.textContent = 'null';
+    } else {
+      valueSpan.textContent = typeof value === 'string' ? `"${value}"` : String(value);
+      typeSpan.textContent = typeof value;
+    }
+    
+    label.appendChild(valueSpan);
+    label.appendChild(typeSpan);
+    node.appendChild(label);
+  }
+  
+  return node;
+}
+
+function getValueAtPath(obj, path) {
+  // Simple JSONPath evaluation implementation
+  if (path === '$') return obj;
+  
+  // Convert path to a series of key accessors
+  const parts = [];
+  let current = '';
+  let inBracket = false;
+  let inQuote = false;
+  
+  for (let i = 1; i < path.length; i++) { // Start at 1 to skip the $
+    const char = path[i];
+    
+    if (char === '.' && !inBracket && !inQuote) {
+      if (current) parts.push(current);
+      current = '';
+    } else if (char === '[' && !inQuote) {
+      if (current) parts.push(current);
+      current = '';
+      inBracket = true;
+    } else if (char === ']' && inBracket && !inQuote) {
+      parts.push(current);
+      current = '';
+      inBracket = false;
+    } else if ((char === "'" || char === '"') && inBracket) {
+      // Handle quotes in bracket notation
+      if (inQuote && path[i-1] !== '\\') {
+        inQuote = false;
+      } else if (!inQuote) {
+        inQuote = true;
+      } else {
+        current += char;
+      }
+    } else {
+      current += char;
+    }
+  }
+  
+  if (current) parts.push(current);
+  
+  // Access the value following the path
+  let result = obj;
+  for (const part of parts) {
+    // If numeric index or quoted string (for bracket notation)
+    let key = part;
+    if (key.startsWith("'") && key.endsWith("'")) {
+      key = key.substring(1, key.length - 1);
+    } else if (key.startsWith('"') && key.endsWith('"')) {
+      key = key.substring(1, key.length - 1);
+    }
+    
+    result = result[key];
+    if (result === undefined) break;
+  }
+  
+  return result;
+}
+
 function formatJSON() {
   const input = document.getElementById("json-input").value;
   const output = document.getElementById("json-output");
@@ -40,6 +383,17 @@ function formatJSON() {
     output.className = "output error";
     animateOutput();
     updateValidationStatus(false, e);
+    
+    // Still make sure the output container is visible on error
+    const outputContainer = document.querySelector('.output-container');
+    if (outputContainer) {
+      outputContainer.style.display = 'block';
+      
+      // Scroll to output container on mobile for better UX
+      if (window.innerWidth <= 768) {
+        outputContainer.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }
 }
 
@@ -486,10 +840,7 @@ function addSampleJSON() {
   showToast("Sample JSON added!");
 }
 
-function toggleMobileMenu() {
-  const navActions = document.querySelector('.nav-actions');
-  navActions.classList.toggle('mobile-open');
-}
+// Mobile menu functionality is now directly in the DOMContentLoaded event
 
 function toggleTheme() {
   const body = document.body;
@@ -568,6 +919,47 @@ function setupDragAndDrop() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize the hamburger menu
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  
+  if (hamburgerMenu) {
+    const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
+    const navActions = document.querySelector('.nav-actions');
+    
+    hamburgerCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        navActions.classList.add('mobile-open');
+      } else {
+        navActions.classList.remove('mobile-open');
+      }
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+        navActions.classList.remove('mobile-open');
+        hamburgerCheckbox.checked = false;
+      }
+    });
+    
+    // Close mobile menu when a link is clicked
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (navActions.classList.contains('mobile-open')) {
+          navActions.classList.remove('mobile-open');
+          hamburgerCheckbox.checked = false;
+        }
+      });
+    });
+  }
+  
+  // Set current year in the footer
+  const currentYearSpan = document.getElementById('current-year');
+  if (currentYearSpan) {
+    currentYearSpan.textContent = new Date().getFullYear();
+  }
+  
   // Toggle dark mode functionality
   const toggleTheme = document.getElementById('toggle-theme');
   const body = document.body;
@@ -579,6 +971,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Toggle dark mode when button is clicked
+  if (toggleTheme) {
   toggleTheme.addEventListener('click', function(e) {
     body.classList.toggle('dark-mode');
     
@@ -605,39 +998,7 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.setItem('theme', 'light');
     }
   });
-  
-  // Mobile hamburger menu functionality
-  const hamburgerMenu = document.getElementById('hamburger-menu');
-  const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
-  const navActions = document.querySelector('.nav-actions');
-  
-  // Update mobile menu state when checkbox changes
-  hamburgerCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      navActions.classList.add('mobile-open');
-    } else {
-      navActions.classList.remove('mobile-open');
-    }
-  });
-  
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
-      navActions.classList.remove('mobile-open');
-      hamburgerCheckbox.checked = false;
-    }
-  });
-  
-  // Close mobile menu when a link is clicked
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      if (navActions.classList.contains('mobile-open')) {
-        navActions.classList.remove('mobile-open');
-        hamburgerCheckbox.checked = false;
-      }
-    });
-  });
+  }
   
   // Handle dropdowns for mobile view
   const dropdownBtns = document.querySelectorAll('.dropdown-btn');
@@ -711,9 +1072,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const copyJsonPathBtn = document.getElementById("copy-jsonpath");
   if (copyJsonPathBtn) {
     copyJsonPathBtn.addEventListener("click", function() {
-    const jsonPathExpression = document.getElementById('jsonpath-expression').textContent;
-    navigator.clipboard.writeText(jsonPathExpression)
+      const jsonPathExpression = document.getElementById('jsonpath-expression');
+      if (jsonPathExpression) {
+        navigator.clipboard.writeText(jsonPathExpression.textContent)
       .then(() => showToast('JSONPath copied to clipboard!'));
+      }
   });
   }
   
@@ -780,11 +1143,6 @@ document.addEventListener('DOMContentLoaded', function() {
           </svg>
           Format JSON
         `;
-        mobileFormatBtn.style.marginTop = '10px';
-        mobileFormatBtn.style.marginBottom = '15px';
-        mobileFormatBtn.style.width = '100%';
-        mobileFormatBtn.style.padding = '12px';
-        mobileFormatBtn.style.fontSize = '16px';
         mobileFormatBtn.addEventListener('click', formatJSON);
         
         // Insert button after input container
@@ -918,4 +1276,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initial validation
   validateJSON();
+  
+  // Ensure the output container is properly initialized
+  const outputContainer = document.querySelector('.output-container');
+  if (outputContainer) {
+    // Make sure the output container is visible by default, especially on mobile
+    if (window.innerWidth <= 768) {
+      outputContainer.style.display = 'block';
+    }
+  }
+  
+  // Mobile menu is already initialized in the document ready handler
 }); 

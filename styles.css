@@ -696,6 +696,7 @@ textarea:focus {
   transition: var(--transition);
   border: 1px solid rgba(255, 255, 255, 0.18);
   margin-bottom: 2rem; /* Add bottom margin to separate from How to Use section */
+  display: block; /* Always display the output container */
 }
 
 .output-header {
@@ -774,14 +775,16 @@ body.dark-mode .output::-webkit-scrollbar-thumb:hover {
   /* Ensure output container is always clearly visible on mobile */
   .output-container {
     margin-top: 3rem;
-    border: 2px solid var(--primary);
+    border: 3px solid var(--primary) !important; /* Thicker border with !important */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    display: block !important; /* Force display with !important */
   }
   
   /* Make the output title more visible on mobile */
   .output-title {
-    font-weight: 700;
-    font-size: 1.1rem;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    color: var(--primary) !important;
   }
 }
 
@@ -3342,14 +3345,14 @@ body.dark-mode .hamburger-btn {
 
 @media (max-width: 768px) {
   .hamburger-btn {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    position: absolute; /* Position absolutely */
-    right: 16px; /* Position on the right side */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Perfect vertical centering */
-    z-index: 1100; /* Ensure it's above other elements */
+    position: absolute !important; /* Position absolutely with !important */
+    right: 16px !important; /* Position on the right side with !important */
+    top: 50% !important; /* Center vertically with !important */
+    transform: translateY(-50%) !important; /* Perfect vertical centering with !important */
+    z-index: 9999 !important; /* Ensure it's above other elements with highest z-index */
   }
   
   .nav-actions {
@@ -4341,25 +4344,111 @@ body.dark-mode .hamburger:hover .line {
 
 /* Hide the old hamburger button and show new one on mobile */
 @media (max-width: 768px) {
-  .hamburger-btn {
-    display: none !important;
+  /* New mobile format button styling */
+  #mobile-format-button {
+    display: block !important;
+    width: 100% !important;
+    padding: 15px !important;
+    background: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    margin-top: 15px !important;
+    margin-bottom: 20px !important;
+    cursor: pointer !important;
+    transition: var(--transition) !important;
+    font-size: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25) !important;
   }
   
+  #mobile-format-button:hover {
+    background: var(--primary-dark) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3) !important;
+  }
+  
+  #mobile-format-button:active {
+    transform: translateY(0) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+    position: relative;
+  }
+  
+  .nav-actions {
+    gap: 0.75rem;
+  }
+  
+  .nav-actions .nav-link,
+  .nav-actions .dropdown {
+    display: none;
+  }
+  
+  /* Show hamburger */
   .hamburger {
     display: block !important;
     position: absolute;
     right: 16px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 9999; /* Ensure it's above everything */
+    z-index: 1100;
   }
   
-  /* Keep the theme toggle button properly positioned relative to the new hamburger */
+  /* Keep the theme toggle button properly positioned */
   #toggle-theme {
-    right: 65px; /* Position with proper spacing from hamburger */
+    right: 65px !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 9999 !important; /* Ensure it's above everything */
+    display: block !important;
+  }
+  
+  /* Mobile menu styles when open */
+  .nav-actions.mobile-open {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 9999; /* Ensure it's above everything */
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    text-align: center;
+    display: flex;
+  }
+  
+  body.dark-mode .nav-actions.mobile-open {
+    background: rgba(30, 30, 30, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .nav-actions.mobile-open .nav-link,
+  .nav-actions.mobile-open .dropdown {
+    display: block !important;
+    width: 100%;
+    padding: 0.75rem 2rem;
+  }
+  
+  .nav-actions.mobile-open .nav-link:hover,
+  .nav-actions.mobile-open .dropdown:hover {
+    background: rgba(67, 97, 238, 0.05);
+  }
+  
+  body.dark-mode .nav-actions.mobile-open .nav-link:hover,
+  body.dark-mode .nav-actions.mobile-open .dropdown:hover {
+    background: rgba(67, 97, 238, 0.1);
   }
 }
