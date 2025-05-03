@@ -444,7 +444,7 @@ function formatJSON() {
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
-      updateValidationStatus(true);
+    updateValidationStatus(true);
     }
     
     // Update line numbers for output
@@ -470,7 +470,7 @@ function formatJSON() {
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
-      updateValidationStatus(false, e);
+    updateValidationStatus(false, e);
     }
     
     // Still make sure the output container is visible on error
@@ -507,7 +507,7 @@ function minifyJSON() {
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
-      updateValidationStatus(true);
+    updateValidationStatus(true);
     }
     
     // Update line numbers for output
@@ -522,7 +522,7 @@ function minifyJSON() {
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
-      updateValidationStatus(false, e);
+    updateValidationStatus(false, e);
     }
   }
 }
@@ -836,8 +836,8 @@ function handleFileUpload(file) {
       // Automatically format and display the output
       const output = document.getElementById('json-output');
       output.innerHTML = formatJSONWithHighlighting(formattedJson);
-      output.className = "output success";
-      
+        output.className = "output success";
+        
       // Update line numbers for output
       updateLineNumbers('output-line-numbers', formattedJson);
       
@@ -921,10 +921,10 @@ function addSampleJSON() {
   
   if (jsonInput) {
     jsonInput.value = formattedJSON;
-    
-    // Update input line numbers
+  
+  // Update input line numbers
     updateLineNumbers('input-line-numbers', formattedJSON);
-    
+  
     // Call format function to update output
     formatJSON();
     
@@ -1025,7 +1025,7 @@ function pasteFromClipboard() {
     const ripple = document.createElement('span');
     ripple.className = 'ripple';
     pasteButton.appendChild(ripple);
-    
+  
     // Remove ripple after animation completes
     setTimeout(() => {
       ripple.remove();
@@ -1040,7 +1040,7 @@ function pasteFromClipboard() {
         
         // Update line numbers
         updateLineNumbers('input-line-numbers', text);
-        
+
         // Validate and potentially format the pasted JSON
         validateJSON();
         
@@ -1123,42 +1123,42 @@ function setupKeyboardShortcuts() {
       }
     }
   });
-}
-
+  }
+  
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the hamburger menu
   const hamburgerMenu = document.getElementById('hamburger-menu');
   
   if (hamburgerMenu) {
     const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
-    const navActions = document.querySelector('.nav-actions');
-    
-    hamburgerCheckbox.addEventListener('change', function() {
-      if (this.checked) {
-        navActions.classList.add('mobile-open');
-      } else {
-        navActions.classList.remove('mobile-open');
-      }
-    });
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
-        navActions.classList.remove('mobile-open');
-        hamburgerCheckbox.checked = false;
-      }
-    });
-    
-    // Close mobile menu when a link is clicked
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        if (navActions.classList.contains('mobile-open')) {
+  const navActions = document.querySelector('.nav-actions');
+  
+      hamburgerCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          navActions.classList.add('mobile-open');
+        } else {
           navActions.classList.remove('mobile-open');
-          hamburgerCheckbox.checked = false;
         }
-      });
+  });
+  
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function(e) {
+      if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
+      navActions.classList.remove('mobile-open');
+          hamburgerCheckbox.checked = false;
+    }
+  });
+  
+  // Close mobile menu when a link is clicked
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      if (navActions.classList.contains('mobile-open')) {
+        navActions.classList.remove('mobile-open');
+            hamburgerCheckbox.checked = false;
+      }
     });
+  });
   }
   
   // Set current year in the footer
