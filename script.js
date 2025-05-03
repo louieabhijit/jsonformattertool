@@ -591,17 +591,24 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Mobile hamburger menu functionality
-  const hamburgerBtn = document.getElementById('hamburger-menu');
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const hamburgerCheckbox = hamburgerMenu.querySelector('input[type="checkbox"]');
   const navActions = document.querySelector('.nav-actions');
   
-  hamburgerBtn.addEventListener('click', function() {
-    navActions.classList.toggle('mobile-open');
+  // Update mobile menu state when checkbox changes
+  hamburgerCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      navActions.classList.add('mobile-open');
+    } else {
+      navActions.classList.remove('mobile-open');
+    }
   });
   
   // Close mobile menu when clicking outside
   document.addEventListener('click', function(e) {
-    if (!hamburgerBtn.contains(e.target) && !navActions.contains(e.target)) {
+    if (!hamburgerMenu.contains(e.target) && !navActions.contains(e.target)) {
       navActions.classList.remove('mobile-open');
+      hamburgerCheckbox.checked = false;
     }
   });
   
@@ -611,6 +618,7 @@ document.addEventListener('DOMContentLoaded', function() {
     link.addEventListener('click', function() {
       if (navActions.classList.contains('mobile-open')) {
         navActions.classList.remove('mobile-open');
+        hamburgerCheckbox.checked = false;
       }
     });
   });
@@ -637,6 +645,15 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
       }
     });
+  });
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768 && !e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown-content').forEach(content => {
+        content.classList.remove('show-mobile');
+      });
+    }
   });
   
   // Add proper error handling for missing elements
