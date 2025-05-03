@@ -26,7 +26,7 @@ Visit the live site at [jsonformattertool.com](https://jsonformattertool.com)
 Clone the repository and open `index.html` in your browser to use the tool locally:
 
 ```bash
-git clone https://github.com/yourusername/json-formatter-tool.git
+git clone https://github.com/louieabhijit/jsonformattertool.git
 cd json-formatter-tool
 ```
 
@@ -39,3 +39,4 @@ Simply open `index.html` in your browser to start using the tool locally.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details. # jsonformattertool
+# jsonformattertool
