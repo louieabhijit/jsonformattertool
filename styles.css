@@ -1927,30 +1927,30 @@ body.dark-mode .btn-icon#copy-jsonpath::after {
   position: absolute;
   right: 25px;
   top: 8px;
-  width: 12px;
-  height: 12px;
+  width: 14px; /* Slightly larger */
+  height: 14px; /* Slightly larger */
   border-radius: 50%;
   background-color: #6c757d; /* Default neutral color */
   opacity: 0;
   transition: all 0.3s ease;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 5;
+  z-index: 50; /* Ensure it's above other elements */
 }
 
 .validation-indicator.valid {
   background-color: var(--success);
-  opacity: 0.7;
-  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+  opacity: 0.9; /* Make it more visible */
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.5); /* Stronger glow */
 }
 
 .validation-indicator.invalid {
   background-color: var(--danger);
-  opacity: 0.7;
-  box-shadow: 0 0 5px rgba(220, 53, 69, 0.3);
+  opacity: 0.9; /* Make it more visible */
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.5); /* Stronger glow */
 }
 
 .validation-indicator.visible {
-  opacity: 0.7;
+  opacity: 0.9; /* Make it more visible when visible class is applied */
 }
 
 /* Dark mode styling for validation indicator */

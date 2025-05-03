@@ -126,9 +126,19 @@ function validateJSON() {
     if (indicator) {
       indicator.className = "validation-indicator valid visible";
     }
+    
+    // If validation is successful, also update the validation status
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(true);
+    }
   } catch (e) {
     if (indicator) {
       indicator.className = "validation-indicator invalid visible";
+    }
+    
+    // If validation fails, update validation status with error
+    if (typeof updateValidationStatus === 'function') {
+      updateValidationStatus(false, e);
     }
   }
 }
@@ -367,6 +377,9 @@ function formatJSON() {
     output.className = "output success";
     animateOutput();
     
+    // Update the validation indicator
+    validateJSON();
+    
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
       updateValidationStatus(true);
@@ -389,6 +402,9 @@ function formatJSON() {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
     animateOutput();
+    
+    // Update the validation indicator
+    validateJSON();
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
@@ -423,6 +439,9 @@ function minifyJSON() {
     output.className = "output info";
     animateOutput();
     
+    // Update the validation indicator
+    validateJSON();
+    
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
       updateValidationStatus(true);
@@ -434,6 +453,9 @@ function minifyJSON() {
     output.textContent = "Invalid JSON: " + e.message;
     output.className = "output error";
     animateOutput();
+    
+    // Update the validation indicator
+    validateJSON();
     
     // Check if updateValidationStatus exists before calling
     if (typeof updateValidationStatus === 'function') {
@@ -830,44 +852,64 @@ function animateOutput() {
 }
 
 function addSampleJSON() {
+  const jsonInput = document.getElementById("json-input");
+  
+  // Example JSON data with various types
   const sampleJSON = {
-    "name": "JSON Buddy",
-    "version": "1.0.0",
-    "description": "Format and validate your JSON",
+    "name": "JSON Formatter Tool",
+    "version": 1.0,
+    "isActive": true,
     "features": [
-      "Format with proper indentation",
-      "Minify by removing whitespace",
-      "Copy to clipboard",
-      "Dark/Light mode toggle"
+      "Format JSON with proper indentation",
+      "Validate JSON syntax",
+      "Convert to different formats",
+      "Download formatted JSON"
     ],
-    "isAwesome": true,
-    "launchDate": "2023-05-01"
+    "settings": {
+      "theme": "auto",
+      "indentSize": 2,
+      "maxOutputSize": 5000
+    },
+    "stats": {
+      "users": 1000,
+      "rating": 4.8,
+      "lastUpdated": "2023-09-15"
+    },
+    "nested": {
+      "level1": {
+        "level2": {
+          "level3": {
+            "message": "Deep nesting is handled properly"
+          }
+        }
+      }
+    },
+    "nullExample": null,
+    "arrayWithObjects": [
+      { "id": 1, "name": "First item" },
+      { "id": 2, "name": "Second item" },
+      { "id": 3, "name": "Third item" }
+    ]
   };
   
-  const jsonString = JSON.stringify(sampleJSON);
-  document.getElementById("json-input").value = jsonString;
+  jsonInput.value = JSON.stringify(sampleJSON, null, 2);
   
-  // Update input line numbers
-  updateLineNumbers('input-line-numbers', jsonString);
+  // Trigger validation and formatting
+  validateJSON();
+  formatJSON();
   
-  // Automatically format the sample JSON
-  const output = document.getElementById("json-output");
-  output.textContent = JSON.stringify(sampleJSON, null, 2);
-  output.className = "output success";
-  animateOutput();
+  // Update line numbers
+  updateLineNumbers('input-line-numbers', jsonInput.value);
+  
+  const indicator = document.getElementById("validation-indicator");
+  if (indicator) {
+    indicator.className = "validation-indicator valid visible";
+  }
   
   // Check if updateValidationStatus exists before calling
   if (typeof updateValidationStatus === 'function') {
     updateValidationStatus(true);
   }
-  
-  // Update output line numbers
-  updateLineNumbers('output-line-numbers', output.textContent);
-  
-  // Update the JSON Path finder with the sample object
-  buildJsonPathTree(sampleJSON);
-  
-  showToast("Sample JSON added!");
 }
 
 // Mobile menu functionality is now directly in the DOMContentLoaded event
@@ -1122,7 +1164,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Keep the existing input event for real-time validation
     jsonInput.addEventListener('input', debounce(function() {
+      // Explicitly call validateJSON to update the indicator
       validateJSON();
+      
       updateLineNumbers('input-line-numbers', jsonInput.value);
       
       // Try to format JSON automatically when input changes
@@ -1149,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', function() {
           buildJsonPathTree(obj);
         }
       } catch (e) {
-        // Silently fail if not valid JSON yet - validation will show the error
+        // Silently fail if not valid JSON yet - validation will show the error via validateJSON() call
       }
     }, 300));
     
